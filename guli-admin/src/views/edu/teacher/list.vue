@@ -1,5 +1,33 @@
 <template>
   <div class="app-container">
+    <el-form :inline="true" :model="teacherQuery" class="demo-form-inline">
+
+      <el-form-item label="名称">
+        <el-input v-model="teacherQuery.name" placeholder="名称"></el-input>
+      </el-form-item>
+
+      <el-form-item label="级别">
+        <el-select v-model="teacherQuery.level" placeholder="级别">
+          <el-option label="首席讲师" value="2"></el-option>
+          <el-option label="高级讲师" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="时间">
+        <el-col :span="11">
+          <el-date-picker type="date" placeholder="选择开始日期" v-model="teacherQuery.begin"
+                          style="width: 100%;"></el-date-picker>
+        </el-col>
+        <el-col class="line" :span="2">-</el-col>
+        <el-col :span="11">
+          <el-date-picker type="date" placeholder="选择结束日期" v-model="teacherQuery.end"
+                          style="width: 100%;"></el-date-picker>
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">查询</el-button>
+      </el-form-item>
+    </el-form>
 
     <!-- 表格 -->
     <el-table
@@ -70,9 +98,15 @@
         total: 0,//总记录数
         page: 1,//当前页
         limit: 5,//每页记录数
+
         teacherQuery: {
           //条件封装对象
-        }
+          name: '',
+          level: '',
+          begin: null, //开始日期
+          end: null, //结束日期
+        },
+
 
 
       }
@@ -82,6 +116,7 @@
     },
     methods: {
       //创建具体的方法，调用teacher.js中定义的方法
+
       getList(page = 1) {
         this.page = page;
         teacher.getTeacherListPage(this.page, this.limit, this.teacherQuery)
@@ -96,6 +131,10 @@
             //请求失败
             console.log(JSON.stringify(error));
           });
+      },
+
+      onSubmit(){
+        this.getList(1);
       }
 
     }
