@@ -26,6 +26,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="default" @click="resetData">清空</el-button>
       </el-form-item>
     </el-form>
 
@@ -68,7 +69,8 @@
             <el-button type="primary" size="mini" icon="el-icon-edit">修改</el-button>
           </router-link>
 
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)">删除
+          <el-button type="danger" size="mini" icon="el-icon-delete"
+                     @click="removeTeacherById(scope.row.id,scope.row.name)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -97,16 +99,13 @@
         list: null,//讲师数据
         total: 0,//总记录数
         page: 1,//当前页
-        limit: 5,//每页记录数
+        limit: 10,//每页记录数
+        teacherId: "",
 
         teacherQuery: {
           //条件封装对象
-          name: '',
-          level: '',
-          begin: null, //开始日期
-          end: null, //结束日期
-        },
 
+        },
 
 
       }
@@ -133,9 +132,50 @@
           });
       },
 
-      onSubmit(){
+      onSubmit() {
         this.getList(1);
-      }
+      },
+
+      resetData() {
+
+        this.teacherQuery = {};
+        this.getList(1);
+      },
+
+
+      removeTeacherById(teacherId, name) {
+
+        this.$confirm(`真的要删除讲师：${name}吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+
+
+          teacher.removeTeacherById(teacherId).then(
+            response => {
+              console.log(JSON.stringify(response));
+              this.getList();
+
+            }
+          ).catch(
+            error => {
+              console.log(JSON.stringify(error));
+
+            }
+          );
+
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+        });
+
+
+      },
+
 
     }
 

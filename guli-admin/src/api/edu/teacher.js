@@ -11,6 +11,18 @@ export default {
       data: teacherQuery
 
     })
+  },
+
+
+  removeTeacherById(teacherId){
+
+    return request({
+      url: `/eduservice/teacher/${teacherId}`,
+      method: 'delete',
+    })
+
   }
+
+
 }
 

@@ -25,6 +25,7 @@ import Test from '../views/login/index.vue'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+  { path: '/edu/teacher/edit/', component: () => import('@/views/edu/teacher/edit'), hidden: true },
   {
     path: '/',
     component: Layout,
