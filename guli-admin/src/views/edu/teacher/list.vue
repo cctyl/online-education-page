@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    讲师列表
+
     <!-- 表格 -->
     <el-table
-      v-loading="listLoading"
+
       :data="list"
-      element-loading-text="数据加载中"
+
       border
       fit
       highlight-current-row>
@@ -23,10 +23,10 @@
 
 
       <el-table-column label="头衔" width="80">
-      <template slot-scope="scope">
-        {{ scope.row.level===1?'高级讲师':'首席讲师' }}
-      </template>
-    </el-table-column>
+        <template slot-scope="scope">
+          {{ scope.row.level===1?'高级讲师':'首席讲师' }}
+        </template>
+      </el-table-column>
 
       <el-table-column prop="intro" label="资历"/>
 
@@ -46,6 +46,15 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页 -->
+    <el-pagination
+      :current-page="page"
+      :page-size="limit"
+      :total="total"
+      style="padding: 30px 0; text-align: center;"
+      layout="total, prev, pager, next, jumper"
+      @current-change="getList"
+    />
   </div>
 </template>
 
@@ -60,7 +69,7 @@
         list: null,//讲师数据
         total: 0,//总记录数
         page: 1,//当前页
-        limit: 10,//每页记录数
+        limit: 5,//每页记录数
         teacherQuery: {
           //条件封装对象
         }
@@ -73,8 +82,8 @@
     },
     methods: {
       //创建具体的方法，调用teacher.js中定义的方法
-      getList() {
-
+      getList(page = 1) {
+        this.page = page;
         teacher.getTeacherListPage(this.page, this.limit, this.teacherQuery)
           .then(resopnse => {
             //请求成功
