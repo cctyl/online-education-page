@@ -116,6 +116,7 @@
     methods: {
       //创建具体的方法，调用teacher.js中定义的方法
 
+      //获取讲师数据
       getList(page = 1) {
         this.page = page;
         teacher.getTeacherListPage(this.page, this.limit, this.teacherQuery)
@@ -132,17 +133,19 @@
           });
       },
 
+      //提交查询数据
       onSubmit() {
         this.getList(1);
       },
 
+      //清空条件框
       resetData() {
 
         this.teacherQuery = {};
         this.getList(1);
       },
 
-
+      //删除讲师
       removeTeacherById(teacherId, name) {
 
         this.$confirm(`真的要删除讲师：${name}吗？`, '提示', {
