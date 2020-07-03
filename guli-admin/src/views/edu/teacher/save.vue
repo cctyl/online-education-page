@@ -43,7 +43,9 @@
     data() {
 
       return {
+
         teacher: {
+          id: "",
           name: '',
           sort: 0,
           level: 1,
@@ -53,14 +55,61 @@
       }
     },
     created() {
+
+      if (this.$route.params && this.$route.params.id){
+        this.teacher.id= this.$route.params.id;
+        this.getInfo(this.teacher.id);
+      }
+
     },
 
     methods: {
 
+      //如果路径后有id值，点击提交就执行 更新方法
+      //如果没有id值，点击提交执行 保存方法
       saveOrUpdate() {
 
-        this.saveTeacher();
+        if (this.teacher.id!=""){
+          //执行update方法
+          teacher.updateTeacherInfo(this.teacher)
+          .then(
+            reponse=>{
 
+              this.$message({
+                message: '修改成功！',
+                type: 'success'
+              });
+
+              this.$router.push({path:'/teacher/table'});
+            }
+          ).catch(
+            error=>{
+
+              console.log(error);
+            }
+          );
+
+        }else {
+
+          this.saveTeacher();
+        }
+
+      },
+
+      //获取讲师数据 ，
+      getInfo(id){
+
+        teacher.getTeacherById(id).then(
+          response=>{
+           this.teacher= response.data.item;
+
+          }
+
+        ).catch(
+          error=>{
+              console.log(error);
+          }
+        );
       },
 
       saveTeacher() {

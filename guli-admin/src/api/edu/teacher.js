@@ -22,6 +22,7 @@ export default {
     })
   },
 
+  //添加讲师
   addTeacher(teacher){
 
     return request({
@@ -31,6 +32,34 @@ export default {
         teacher
 
     })
+  },
+
+  //根据ID查询讲师信息
+  getTeacherById(id){
+
+    return request({
+      url: `/eduservice/teacher/${id}`,
+      method: 'get',
+
+
+    })
+  },
+
+
+  //修改讲师数据
+  updateTeacherInfo(teacher){
+
+    return request({
+      url: `/eduservice/teacher/${teacher.id}`,
+      method: 'put',
+      data:teacher
+
+    })
+
+
   }
+
+
+
 }
 
