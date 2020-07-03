@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    讲师添加
+
     <el-form label-width="120px">
       <el-form-item label="讲师名称">
         <el-input v-model="teacher.name"/>
@@ -56,14 +56,29 @@
     },
     created() {
 
-      if (this.$route.params && this.$route.params.id){
-        this.teacher.id= this.$route.params.id;
-        this.getInfo(this.teacher.id);
-      }
+        this.initPage();
 
+    },
+    watch: {
+      $route(to, from) {
+
+        this.initPage();
+      }
     },
 
     methods: {
+
+
+      //页面初始化执行的方法
+      initPage(){
+        if (this.$route.params && this.$route.params.id){
+          this.teacher.id= this.$route.params.id;
+          this.getInfo(this.teacher.id);
+        }else {
+          this.teacher={};
+        }
+
+      },
 
       //如果路径后有id值，点击提交就执行 更新方法
       //如果没有id值，点击提交执行 保存方法

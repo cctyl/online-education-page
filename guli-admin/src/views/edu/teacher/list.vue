@@ -57,7 +57,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="intro" label="资历"/>
+      <el-table-column prop="career" label="资历" width="100"/>
+      <el-table-column prop="intro" label="简介"/>
 
       <el-table-column prop="gmtCreate" label="添加时间" width="160"/>
 
