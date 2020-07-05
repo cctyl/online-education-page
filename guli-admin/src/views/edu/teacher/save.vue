@@ -84,27 +84,29 @@
       //如果没有id值，点击提交执行 保存方法
       saveOrUpdate() {
 
-        if (this.teacher.id!=""){
-          //执行update方法
-          teacher.updateTeacherInfo(this.teacher)
-          .then(
-            reponse=>{
+        if (this.$route.params && this.$route.params.id ){
+              console.log("执行修改方法："+this.teacher.id);
+              //执行update方法
+              teacher.updateTeacherInfo(this.teacher)
+              .then(
+                reponse=>{
 
-              this.$message({
-                message: '修改成功！',
-                type: 'success'
-              });
+                  this.$message({
+                    message: '修改成功！',
+                    type: 'success'
+                  });
 
-              this.$router.push({path:'/teacher/table'});
-            }
-          ).catch(
-            error=>{
+                  this.$router.push({path:'/teacher/table'});
+                }
+              ).catch(
+                error=>{
 
-              console.log(error);
-            }
-          );
+                  console.log(error);
+                }
+              );
 
         }else {
+          console.log("执行保存方法："+this.teacher.id);
 
           this.saveTeacher();
         }
