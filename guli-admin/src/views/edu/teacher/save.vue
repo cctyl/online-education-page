@@ -43,14 +43,14 @@
           @close：关闭弹窗的方法
           @crop-upload-success：上传成功后的回调 -->
         <image-cropper
-              v-show="imagecropperShow"
-              :width="300"
-              :height="300"
-              :key="imagecropperKey"
-              :url="BASE_API+'/eduoss/fileoss/uploadAvatar'"
-              field="file"
-              @close="close"
-              @crop-upload-success="cropSuccess"/>
+          v-show="imagecropperShow"
+          :width="300"
+          :height="300"
+          :key="imagecropperKey"
+          :url="BASE_API+'/eduoss/fileoss/uploadAvatar'"
+          field="file"
+          @close="close"
+          @crop-upload-success="cropSuccess"/>
 
       </el-form-item>
 
@@ -68,7 +68,7 @@
   import PanThumb from '@/components/PanThumb'
 
   export default {
-    components: { ImageCropper, PanThumb },
+    components: {ImageCropper, PanThumb},
     name: "save",
     data() {
 
@@ -79,7 +79,7 @@
           name: '',
           sort: 0,
           level: 1,
-          avatar:""
+          avatar: "https://online-tyl-edu.oss-cn-shenzhen.aliyuncs.com/2020/07/05/4000ca008b84444bb8687e6162f6693efile.png"
         },
         saveBtnDisabled: false,
         imagecropperShow: false,
@@ -90,7 +90,7 @@
     },
     created() {
 
-        this.initPage();
+      this.initPage();
 
     },
     watch: {
@@ -102,23 +102,25 @@
 
     methods: {
 
-      close(){
-        this.imagecropperShow=false;
+      close() {
+        this.imagecropperShow = false;
+        this.imagecropperKey++;
+
       },
-      cropSuccess(data){
+      cropSuccess(data) {
         //拿到返回的图片地址
-       this.teacher.avatar =  data.url;
-       //关闭窗口
+        this.teacher.avatar = data.url;
+        //关闭窗口
         this.close();
       },
 
       //页面初始化执行的方法
-      initPage(){
-        if (this.$route.params && this.$route.params.id){
-          this.teacher.id= this.$route.params.id;
+      initPage() {
+        if (this.$route.params && this.$route.params.id) {
+          this.teacher.id = this.$route.params.id;
           this.getInfo(this.teacher.id);
-        }else {
-          this.teacher={};
+        } else {
+          this.teacher = {};
         }
 
       },
@@ -127,29 +129,29 @@
       //如果没有id值，点击提交执行 保存方法
       saveOrUpdate() {
 
-        if (this.$route.params && this.$route.params.id ){
-              console.log("执行修改方法："+this.teacher.id);
-              //执行update方法
-              teacher.updateTeacherInfo(this.teacher)
-              .then(
-                reponse=>{
+        if (this.$route.params && this.$route.params.id) {
+          console.log("执行修改方法：" + this.teacher.id);
+          //执行update方法
+          teacher.updateTeacherInfo(this.teacher)
+            .then(
+              reponse => {
 
-                  this.$message({
-                    message: '修改成功！',
-                    type: 'success'
-                  });
+                this.$message({
+                  message: '修改成功！',
+                  type: 'success'
+                });
 
-                  this.$router.push({path:'/teacher/table'});
-                }
-              ).catch(
-                error=>{
+                this.$router.push({path: '/teacher/table'});
+              }
+            ).catch(
+            error => {
 
-                  console.log(error);
-                }
-              );
+              console.log(error);
+            }
+          );
 
-        }else {
-          console.log("执行保存方法："+this.teacher.id);
+        } else {
+          console.log("执行保存方法：" + this.teacher.id);
 
           this.saveTeacher();
         }
@@ -157,17 +159,16 @@
       },
 
       //获取讲师数据 ，
-      getInfo(id){
+      getInfo(id) {
 
         teacher.getTeacherById(id).then(
-          response=>{
-           this.teacher= response.data.item;
+          response => {
+            this.teacher = response.data.item;
 
           }
-
         ).catch(
-          error=>{
-              console.log(error);
+          error => {
+            console.log(error);
           }
         );
       },
