@@ -77,9 +77,20 @@
 
       fileUploadSuccess(response) {
 
+        this.loading=false;
+        this.$message({
+          type: "success",
+          message: "上传成功"
+        });
+
       },
 
       fileUploadError(response) {
+        this.loading=false;
+        this.$message({
+          type: "error",
+          message: "上传失败"
+        });
 
       }
     }
