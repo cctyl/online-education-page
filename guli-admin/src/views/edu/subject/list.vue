@@ -16,7 +16,6 @@
 
 <script>
   import subject from "@/api/edu/subject"
-  import teacher from "../../../api/edu/teacher";
   export default {
     name: "list",
     data() {
@@ -42,7 +41,7 @@
       //检索 节点名
       filterNode(value, data) {
         if (!value) return true
-        return data.label.indexOf(value) !== -1
+        return data.title.indexOf(value) !== -1
       },
       getAllSubjectInfo(){
 
