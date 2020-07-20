@@ -83,6 +83,8 @@
           message: "上传成功"
         });
 
+        this.$router.push({path : '/subject/list'})
+
       },
 
       fileUploadError(response) {
