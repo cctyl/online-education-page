@@ -64,7 +64,20 @@
       </el-form-item>
 
 
-      <!-- 课程封面 TODO -->
+      <!-- 课程封面  -->
+
+      <el-form-item label="课程封面">
+
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+          :action="BASE_API+'/eduoss/fileoss/uploadAvatar'"
+          class="avatar-uploader">
+          <img :src="courseInfo.cover">
+        </el-upload>
+
+      </el-form-item>
 
 
       <el-form-item label="课程价格">
@@ -91,6 +104,7 @@
       return ({
         saveBtnDisabled: false,
         teacherList: [],
+        BASE_API: process.env.BASE_API,
 
         courseInfo: {
           title: '',
@@ -99,7 +113,7 @@
           teacherId: '',
           lessonNum: 0,
           description: '',
-          cover: '',
+          cover: 'https://online-tyl-edu.oss-cn-shenzhen.aliyuncs.com/2020/07/21/184d2bc6b81746b2846b2355963a806cu=3561855691,1585773787&fm=26&gp=0.jpg',
           price: 0,
         },
 
@@ -113,6 +127,27 @@
       this.getOneSubjectList();
     },
     methods: {
+      //上传成功
+      handleAvatarSuccess(res,file){
+        //得到文件地址
+        this.courseInfo.cover = res.data.url;
+      },
+      //上传之前
+      beforeAvatarUpload(file){
+          //规定文件类型和文件大小
+
+        const isJPG = file.type === 'image/jpeg'
+        const isLt2M = file.size / 1024 / 1024 < 2
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        }
+        return isJPG && isLt2M
+      },
+
       //当选择一级分类的时候，就触发这个方法
       subjectLevelOneChanged(value) {
         console.log(value)
