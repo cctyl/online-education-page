@@ -60,7 +60,7 @@
 
       <!-- 课程简介  -->
       <el-form-item label="课程简介">
-        <el-input v-model="courseInfo.desc" placeholder="课程介绍"/>
+        <tinymce :height="300" v-model="courseInfo.description"/>
       </el-form-item>
 
 
@@ -97,8 +97,12 @@
   import course from '@/api/edu/course'
   import teacher from "@/api/edu/teacher";
   import subject from "@/api/edu/subject";
+  import Tinymce from '@/components/Tinymce'
 
   export default {
+
+    components: {Tinymce},
+
     name: "info",
     data() {
       return ({
@@ -128,13 +132,13 @@
     },
     methods: {
       //上传成功
-      handleAvatarSuccess(res,file){
+      handleAvatarSuccess(res, file) {
         //得到文件地址
         this.courseInfo.cover = res.data.url;
       },
       //上传之前
-      beforeAvatarUpload(file){
-          //规定文件类型和文件大小
+      beforeAvatarUpload(file) {
+        //规定文件类型和文件大小
 
         const isJPG = file.type === 'image/jpeg'
         const isLt2M = file.size / 1024 / 1024 < 2
@@ -214,5 +218,7 @@
 </script>
 
 <style scoped>
-
+  .tinymce-container {
+    line-height: 29px;
+  }
 </style>
