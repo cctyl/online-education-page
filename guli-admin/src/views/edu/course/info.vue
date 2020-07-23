@@ -109,7 +109,8 @@
         saveBtnDisabled: false,
         teacherList: [],
         BASE_API: process.env.BASE_API,
-
+        courseId:'',
+        subjectIdbak:'',
         courseInfo: {
           title: '',
           subjectId: '',
@@ -127,9 +128,19 @@
       })
     },
     created() {
-      this.getTeacherList();
       this.getOneSubjectList();
+      if (this.$route.params && this.$route.params.id) {
+        this.courseId = this.$route.params.id;
+
+        this.getCourseInfoById(this.courseId);
+
+      }
+
+
+      this.getTeacherList();
+
     },
+
     methods: {
       //上传成功
       handleAvatarSuccess(res, file) {
@@ -154,13 +165,30 @@
 
       //当选择一级分类的时候，就触发这个方法
       subjectLevelOneChanged(value) {
-        console.log(value)
+
+
         for (let i = 0; i < this.subjectNestedList.length; i++) {
           if (this.subjectNestedList[i].id === value) {
             this.subSubjectList = this.subjectNestedList[i].children
             this.courseInfo.subjectId = ''
           }
         }
+        this.courseInfo.subjectId=this.subjectIdbak;
+
+      },
+
+      //根据ID查询课程信息
+      getCourseInfoById(id){
+        course.getCourseInfoById(id).then(
+          result => {
+
+            this.courseInfo=result.data.courseInfo;
+            this.subjectIdbak=result.data.courseInfo.subjectId;
+            console.log("课程简介数据："+this.courseInfo.description);
+
+            this.subjectLevelOneChanged(this.courseInfo.subjectParentId);// 手动触发 二级分类选择方法
+          }
+        );
       },
 
       //获取一级分类数据
@@ -169,6 +197,7 @@
         subject.getAllSubject().then(
           result => {
             this.subjectNestedList = result.data.list;
+
           }
         ).catch(
           result => {
@@ -177,30 +206,51 @@
         );
       },
       saveOrUpdate() {
+        console.log("this.courseId="+this.courseId);
+        if (this.courseId!==''){
 
-        course.saveCourse(this.courseInfo).then(
-          result => {
-            if (result.code == 20000) {
-              var id = result.data.id;
-              this.$message({
-                type: "success",
-                message: "课程信息添加成功"
+          //id有值，应当是第一次编写
+          course.updateCourseInfo(this.courseInfo,this.courseId).then(
+            result => {
+              if (result.code==20000){
 
-              });
-              this.$router.push(({path: `/course/chapter/${id}`}))
-            } else {
+                this.$message({
+                  type: "success",
+                  message: "课程信息修改成功"
 
-              this.$message({
-                type: "error",
-                message: "添加失败"
+                });
+                this.$router.push(({path: `/course/chapter/${this.courseId}`}))
+              }
+            }
+          );
 
-              });
+        }else {
+          //id无值，应当是修改数据
+          course.saveCourse(this.courseInfo).then(
+            result => {
+              if (result.code == 20000) {
+                var id = result.data.id;
+                this.$message({
+                  type: "success",
+                  message: "课程信息添加成功"
 
+                });
+                this.$router.push(({path: `/course/chapter/${id}`}))
+              } else {
+
+                this.$message({
+                  type: "error",
+                  message: "添加失败"
+
+                });
+
+
+              }
 
             }
+          );
+        }
 
-          }
-        );
       },
 
       //获取讲师数据
