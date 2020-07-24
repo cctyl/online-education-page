@@ -76,7 +76,7 @@
 </template>
 
 <script>
-  import chapter from "@/api/edu/chapter";
+  import chapterApi from "@/api/edu/chapter";
 
   let id = 1000;
   export default {
@@ -112,7 +112,7 @@
     methods: {
 
       getChapertViodeByCourseId() {
-        chapter.getAllChapterVideo(this.courseId).then(
+        chapterApi.getAllChapterVideo(this.courseId).then(
           result => {
             if (result.code == 20000) {
               this.chapterNestedList = result.data.list;
@@ -137,6 +137,7 @@
           //添加章节信息
           //执行保存方法
           console.log("执行保存方法");
+          this.saveChapterInfo();
         } else {
           //修改章节信息
           //执行修改方法
@@ -163,25 +164,88 @@
 
       //修改章节
       updateChapterInfo() {
-        chapter.updateChapter(this.chapter).then(
+        chapterApi.updateChapter(this.chapter).then(
           result => {
+            if (result.code ==20000) {
+              //关闭对话框
+              this.dialog.dialogChapterFormVisible = false;
+              //提示信息
+              this.$message({
+                type: "success",
+                message: "章节信息修改成功"
+              });
+              this.chapter.title = "";
+              this.chapter.sort = "";
 
-            //关闭对话框
-            this.dialog.dialogChapterFormVisible = false;
-            //提示信息
-            this.$message({
-              type: "success",
-              message: "章节信息修改成功"
-            });
-            this.chapter.title="";
-            this.chapter.sort="";
-
-            //刷新页面
-            this.getChapertViodeByCourseId();
-
+              //刷新页面
+              this.getChapertViodeByCourseId();
+            }else {
+              this.$message({
+                type: "error",
+                message: "章节信息修改失败"
+              });
+              this.chapter.title="";
+              this.chapter.sort="";
+            }
+          }
+        ).catch(
+          reason => {
+            reason => {
+              this.$message({
+                type: "error",
+                message: "出现严重错误，章节信息修改失败，请查看后台日志"
+              });
+              this.chapter.title="";
+              this.chapter.sort="";
+            }
           }
         );
       },
+
+      //添加章节
+      saveChapterInfo() {
+        let courseInfo = this.chapter;
+        this.chapter.courseId = this.courseId;
+        console.log("要添加的课程信息："+courseInfo);
+        chapterApi.saveChapter(courseInfo).then(
+          result => {
+            if (result.code ==20000){
+              //关闭对话框
+              this.dialog.dialogChapterFormVisible = false;
+              //提示信息
+              this.$message({
+                type: "success",
+                message: "章节信息添加成功"
+              });
+              this.chapter.title="";
+              this.chapter.sort="";
+
+              //刷新页面
+              this.getChapertViodeByCourseId();
+            }else {
+              this.$message({
+                type: "error",
+                message: "章节信息添加失败"
+              });
+              this.chapter.title="";
+              this.chapter.sort="";
+            }
+
+
+
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type: "error",
+              message: "章节信息添加失败"
+            });
+            this.chapter.title="";
+            this.chapter.sort="";
+          }
+        );
+      },
+
 
 
       //删除章节
@@ -192,7 +256,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          chapter.deleteChapter(id).then(
+          chapterApi.deleteChapter(id).then(
             result => {
               if (result.code==20000){
                 //提示信息
@@ -223,17 +287,7 @@
       },
 
 
-      /*
-      //弹出并且回显章节信息表单
-      alertUpdateDialog(chapter){
 
-        this.chapter = chapter;
-
-        this.updateChapterFormVisible = true;
-      },
-
-
-      }*/
 
     }
   }
