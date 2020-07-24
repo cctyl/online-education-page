@@ -26,7 +26,7 @@
               <span class="acts">
                 <el-button type="text">添加课时</el-button>
                 <el-button style="" type="text" @click="openUpdateChapterDialog(chapter)">编辑</el-button>
-                <el-button type="text" @click="">删除</el-button>
+                <el-button type="text" @click="deleteChapter(chapter.id)">删除</el-button>
             </span>
             </p>
 
@@ -181,33 +181,49 @@
 
           }
         );
-      }
-
-      /*//删除章节
-      deleteChapter(id){
-        chapter.deleteChapter(id).then(
-          result => {
-            if (result.code==20000){
-              //提示信息
-              this.$message({
-                type: "success",
-                message: "删除成功"
-              });
-              //刷新页面
-              this.getChapertViodeByCourseId();
-
-            }else {
-              //提示信息
-              this.$message({
-                type: "error",
-                message: "删除失败"
-              });
-            }
-
-          }
-        );
       },
 
+
+      //删除章节
+      deleteChapter(id){
+
+        this.$confirm('确定删除这个章节吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          chapter.deleteChapter(id).then(
+            result => {
+              if (result.code==20000){
+                //提示信息
+                this.$message({
+                  type: "success",
+                  message: "删除成功"
+                });
+                //刷新页面
+                this.getChapertViodeByCourseId();
+
+              }else {
+                //提示信息
+                this.$message({
+                  type: "error",
+                  message: "删除失败"
+                });
+              }
+
+            }
+          );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
+
+
+      /*
       //弹出并且回显章节信息表单
       alertUpdateDialog(chapter){
 
