@@ -132,9 +132,10 @@
       if (this.$route.params && this.$route.params.id) {
         this.courseId = this.$route.params.id;
 
-        this.getCourseInfoById(this.courseId);
 
+        this.getCourseInfoById(this.courseId);
       }
+
 
 
       this.getTeacherList();
@@ -206,10 +207,10 @@
         );
       },
       saveOrUpdate() {
-        console.log("this.courseId="+this.courseId);
-        if (this.courseId!==''){
 
-          //id有值，应当是第一次编写
+        if (this.$route.params && this.$route.params.id){
+
+          //id有值，应当是修改数据
           course.updateCourseInfo(this.courseInfo,this.courseId).then(
             result => {
               if (result.code==20000){
@@ -219,13 +220,14 @@
                   message: "课程信息修改成功"
 
                 });
-                this.$router.push(({path: `/course/chapter/${this.courseId}`}))
+                console.log("当前的courseid是："+this.courseId);
+                this.$router.push(({path: `/course/chapter/${this.courseId}`}));
               }
             }
           );
 
         }else {
-          //id无值，应当是修改数据
+          //id无值，应当是第一次编写
           course.saveCourse(this.courseInfo).then(
             result => {
               if (result.code == 20000) {
@@ -235,7 +237,9 @@
                   message: "课程信息添加成功"
 
                 });
-                this.$router.push(({path: `/course/chapter/${id}`}))
+                console.log("当前的courseid是："+this.courseId);
+                this.$router.push(({path: `/course/chapter/${this.courseId}`}));
+
               } else {
 
                 this.$message({
