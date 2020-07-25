@@ -39,7 +39,7 @@
                 :key="video.id">
                 <p>{{ video.title }}
                   <span class="acts">
-                        <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video.id)">编辑</el-button>
+                        <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video)">编辑</el-button>
                         <el-button type="text" @click="deleteVideo(video.id)">删除</el-button>
                     </span>
                 </p>
@@ -53,7 +53,7 @@
 
 
 
-    <!-- 添加和修改章节表单 -->
+    <!-- 添加和修改章节对话框 -->
     <el-dialog :visible.sync="dialog.dialogChapterFormVisible" :title="dialog.title">
       <el-form :model="chapter" label-width="120px">
         <el-form-item label="章节标题">
@@ -349,12 +349,14 @@
       },
 
       //打开修改小节对话框
-      openUpdateVideoDialog(chapterId,videoId) {
+      openUpdateVideoDialog(chapterId,video) {
         console.log("openUpdateVideoDialog--chapterId是：" + chapterId);
+        console.log("video信息：" + JSON.stringify(video));
         //给video中的两个属性赋值
+        this.video=video;
         this.video.chapterId = chapterId;
         this.video.courseId = this.courseId;
-        this.video.id = videoId;
+
 
         //设置标记，表明这是一个添加对话框
         this.videoDialog.flag = false;
