@@ -3,6 +3,7 @@
 
     <h2 style="text-align: center;">发布新课程</h2>
 
+    <!--进度条-->
     <el-steps :active="2" process-status="wait" align-center style="margin-bottom: 40px;">
       <el-step title="填写课程基本信息"/>
       <el-step title="创建课程大纲"/>
@@ -10,6 +11,7 @@
     </el-steps>
 
 
+    <!--主要信息显示部分-->
     <el-container>
       <el-aside width="100px"></el-aside>
       <el-main>
@@ -38,7 +40,7 @@
                 <p>{{ video.title }}
                   <span class="acts">
                         <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video.id)">编辑</el-button>
-                        <el-button type="text">删除</el-button>
+                        <el-button type="text" @click="deleteVideo(video.id)">删除</el-button>
                     </span>
                 </p>
               </li>
@@ -48,6 +50,9 @@
 
       </el-main>
     </el-container>
+
+
+
     <!-- 添加和修改章节表单 -->
     <el-dialog :visible.sync="dialog.dialogChapterFormVisible" :title="dialog.title">
       <el-form :model="chapter" label-width="120px">
@@ -63,6 +68,8 @@
         <el-button type="primary" @click="saveOrUpdate(dialog.flag)">确 定</el-button>
       </div>
     </el-dialog>
+
+
 
     <!--小节添加和修改对话框-->
     <el-dialog :visible.sync="videoDialog.dialogVideoFormVisible" :title="videoDialog.title">
@@ -91,6 +98,8 @@
       </div>
     </el-dialog>
 
+
+    <!--底部按钮-->
     <el-form label-width="120px">
 
       <el-form-item>
@@ -98,6 +107,9 @@
         <el-button :disabled="saveBtnDisabled" type="primary" @click="next">下一步</el-button>
       </el-form-item>
     </el-form>
+
+
+
   </div>
 </template>
 
@@ -270,7 +282,56 @@
       },
 
 
-      //
+      //删除小节
+      deleteVideo(videoId){
+
+        this.$confirm('确定删除这个小节吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+            videoApi.deleteVideo(videoId).then(
+              result => {
+
+                if (result.code == 20000) {
+                  //提示信息
+                  this.$message({
+                    type: "success",
+                    message: "删除成功"
+                  });
+                  //刷新页面
+                  this.getChapertViodeByCourseId();
+
+                } else {
+                  //提示信息
+                  this.$message({
+                    type: "error",
+                    message: "删除失败"
+                  });
+                }
+
+              }
+            ).catch(
+              reason => {
+                this.$message({
+                  type: "error",
+                  message: "小节节信息修改失败"
+                });
+                this.clearVideo();
+              }
+            );
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+
+      },
 
       //打开添加小节对话框
       openSaveVideoDialog(chapterId) {
