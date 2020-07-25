@@ -129,16 +129,16 @@
     },
     created() {
       this.getOneSubjectList();
+      this.getTeacherList();
       if (this.$route.params && this.$route.params.id) {
+        console.log("初始化，获取id："+this.$route.params.id);
         this.courseId = this.$route.params.id;
-
-
         this.getCourseInfoById(this.courseId);
       }
 
 
 
-      this.getTeacherList();
+
 
     },
 
@@ -148,6 +148,7 @@
         //得到文件地址
         this.courseInfo.cover = res.data.url;
       },
+
       //上传之前
       beforeAvatarUpload(file) {
         //规定文件类型和文件大小
@@ -180,14 +181,30 @@
 
       //根据ID查询课程信息
       getCourseInfoById(id){
+        console.log("getCourseInfoById --- 根据ID获取信息，ID是："+id);
         course.getCourseInfoById(id).then(
           result => {
 
-            this.courseInfo=result.data.courseInfo;
-            this.subjectIdbak=result.data.courseInfo.subjectId;
-            console.log("课程简介数据："+this.courseInfo.description);
+            if (result.code==20000){
+              this.courseInfo=result.data.courseInfo;
+              this.subjectIdbak=result.data.courseInfo.subjectId;
+              console.log("课程简介数据："+this.courseInfo.description);
 
-            this.subjectLevelOneChanged(this.courseInfo.subjectParentId);// 手动触发 二级分类选择方法
+              this.subjectLevelOneChanged(this.courseInfo.subjectParentId);// 手动触发 二级分类选择方法
+            }else {
+              this.$message({
+                type:"error",
+                message:"获取课程信息失败："+result
+              });
+            }
+
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type:"error",
+              message:"出现严重错误，获取课程信息失败："+reason
+            });
           }
         );
       },
@@ -206,9 +223,13 @@
           }
         );
       },
+
+      //保存或者修改
       saveOrUpdate() {
 
         if (this.$route.params && this.$route.params.id){
+
+          console.log("saveOrUpdate --- 执行修改方法，ID是："+this.courseId);
 
           //id有值，应当是修改数据
           course.updateCourseInfo(this.courseInfo,this.courseId).then(
@@ -224,21 +245,32 @@
                 this.$router.push(({path: `/course/chapter/${this.courseId}`}));
               }
             }
+          ).catch(
+            reason => {
+              this.$message({
+                type: "error",
+                message: "出现严重错误，数据添加失败"
+
+              });
+            }
           );
 
         }else {
+
+
           //id无值，应当是第一次编写
           course.saveCourse(this.courseInfo).then(
             result => {
               if (result.code == 20000) {
-                var id = result.data.id;
+                let cid = result.data.id;
+                console.log("saveOrUpdate --- 执行修改方法，ID是："+cid);
                 this.$message({
                   type: "success",
                   message: "课程信息添加成功"
 
                 });
-                console.log("当前的courseid是："+this.courseId);
-                this.$router.push(({path: `/course/chapter/${this.courseId}`}));
+
+                this.$router.push(({path: `/course/chapter/${cid}`}));
 
               } else {
 
@@ -251,6 +283,15 @@
 
               }
 
+            }
+          ).catch(
+            reason => {
+
+              this.$message({
+                type: "error",
+                message: "出现严重错误，修改数据失败"
+
+              });
             }
           );
         }
