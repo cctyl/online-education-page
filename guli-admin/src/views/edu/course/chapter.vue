@@ -24,7 +24,7 @@
               {{ chapter.title }}
 
               <span class="acts">
-                <el-button type="text">添加课时</el-button>
+                <el-button type="text" @click="openSaveVideoDialog(chapter.id)">添加课时</el-button>
                 <el-button style="" type="text" @click="openUpdateChapterDialog(chapter)">编辑</el-button>
                 <el-button type="text" @click="deleteChapter(chapter.id)">删除</el-button>
             </span>
@@ -37,7 +37,7 @@
                 :key="video.id">
                 <p>{{ video.title }}
                   <span class="acts">
-                        <el-button type="text">编辑</el-button>
+                        <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video.id)">编辑</el-button>
                         <el-button type="text">删除</el-button>
                     </span>
                 </p>
@@ -64,6 +64,32 @@
       </div>
     </el-dialog>
 
+    <!--小节添加和修改对话框-->
+    <el-dialog :visible.sync="videoDialog.dialogVideoFormVisible" :title="videoDialog.title">
+      <el-form :model="video" label-width="120px">
+        <el-form-item label="课时标题">
+          <el-input v-model="video.title"/>
+        </el-form-item>
+        <el-form-item label="课时排序">
+          <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
+        </el-form-item>
+        <el-form-item label="是否免费">
+          <el-radio-group v-model="video.free">
+            <el-radio :label="true">免费</el-radio>
+            <el-radio :label="false">默认</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="上传视频">
+          <!-- TODO -->
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="videoDialog.dialogVideoFormVisible = false">取 消</el-button>
+        <el-button :disabled="videoDialog.saveVideoBtnDisabled" type="primary"
+                   @click="saveOrUpdateVideo(videoDialog.flag)">确 定
+        </el-button>
+      </div>
+    </el-dialog>
 
     <el-form label-width="120px">
 
@@ -77,6 +103,7 @@
 
 <script>
   import chapterApi from "@/api/edu/chapter";
+  import videoApi from "@/api/edu/video";
 
   let id = 1000;
   export default {
@@ -98,6 +125,17 @@
           flag: true, //true 表示添加章节   false表示修改章节
           title: "", //对话框的标题
         },
+        videoDialog: {
+
+          saveVideoBtnDisabled: false,
+          dialogVideoFormVisible: false,
+          title: "",
+          flag: true,    //true是添加小节，flase是修改小节
+        },
+        video: {
+
+          sort: 0,
+        },
 
       })
     },
@@ -111,6 +149,162 @@
     },
     methods: {
 
+
+      previous() {
+        this.$router.push(({path: '/course/info/' + this.courseId}))
+      },
+      next() {
+
+        this.$router.push(({path: '/course/publish/' + this.courseId}))
+
+      },
+
+
+      //================================小节节操作相关==================================
+
+
+      //添加/修改小节
+      saveOrUpdateVideo(flag) {
+
+        if (flag == true) {
+          //添加小节
+          console.log("saveOrUpdateVideo---执行添加小节，flag=" + flag);
+          this.saveVideo();
+
+        } else {
+          //修改小节
+          console.log("执行修改小节");
+          this.updateVideo();
+
+        }
+
+      },
+
+
+      //清空video数据
+      clearVideo(){
+
+        this.video = {
+          sort: 0
+        };
+
+        console.log("清空后的数据情况："+JSON.stringify(this.video));
+      },
+
+      //添加小节
+      saveVideo() {
+        videoApi.saveChapter(this.video).then(
+          result => {
+            if (result.code == 20000) {
+              //关闭对话框
+              this.videoDialog.dialogVideoFormVisible = false;
+              //提示信息
+              this.$message({
+                type: "success",
+                message: "小节信息添加成功"
+              });
+              //清空旧数据
+              this.clearVideo();
+
+
+              //刷新页面
+              this.getChapertViodeByCourseId();
+            } else {
+              this.$message({
+                type: "error",
+                message: "小节信息添加失败"
+              });
+              this.clearVideo();
+            }
+
+
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type: "error",
+              message: "小节节信息添加失败"
+            });
+            this.clearVideo();
+          }
+        );
+      },
+
+      //修改小节
+      updateVideo() {
+        videoApi.updateChapter(this.video).then(
+          result => {
+            if (result.code == 20000) {
+              //关闭对话框
+              this.videoDialog.dialogVideoFormVisible = false;
+              //提示信息
+              this.$message({
+                type: "success",
+                message: "小节信息修改成功"
+              });
+              //清空旧数据
+              this.clearVideo();
+
+
+              //刷新页面
+              this.getChapertViodeByCourseId();
+            } else {
+              this.$message({
+                type: "error",
+                message: "小节信息修改失败"
+              });
+              this.clearVideo();
+            }
+
+
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type: "error",
+              message: "小节节信息修改失败"
+            });
+            this.clearVideo();
+          }
+        );
+      },
+
+
+      //
+
+      //打开添加小节对话框
+      openSaveVideoDialog(chapterId) {
+        console.log("openSaveVideoDialog--chapterId是：" + chapterId);
+        //给video中的两个属性赋值
+        this.video.chapterId = chapterId;
+        this.video.courseId = this.courseId;
+
+        //设置标记，表明这是一个添加对话框
+        this.videoDialog.flag = true;
+        this.videoDialog.title = "添加小节";
+        //令对话框可见
+        this.videoDialog.dialogVideoFormVisible = true;
+
+      },
+
+      //打开修改小节对话框
+      openUpdateVideoDialog(chapterId,videoId) {
+        console.log("openUpdateVideoDialog--chapterId是：" + chapterId);
+        //给video中的两个属性赋值
+        this.video.chapterId = chapterId;
+        this.video.courseId = this.courseId;
+        this.video.id = videoId;
+
+        //设置标记，表明这是一个添加对话框
+        this.videoDialog.flag = false;
+        this.videoDialog.title = "修改小节信息";
+        //令对话框可见
+        this.videoDialog.dialogVideoFormVisible = true;
+
+      },
+
+//================================章节操作相关==================================
+      //获取章节列表
       getChapertViodeByCourseId() {
         chapterApi.getAllChapterVideo(this.courseId).then(
           result => {
@@ -119,14 +313,6 @@
             }
           }
         );
-
-      },
-      previous() {
-        this.$router.push(({path: '/course/info/' + this.courseId}))
-      },
-      next() {
-
-        this.$router.push(({path: '/course/publish/' + this.courseId}))
 
       },
 
@@ -166,7 +352,7 @@
       updateChapterInfo() {
         chapterApi.updateChapter(this.chapter).then(
           result => {
-            if (result.code ==20000) {
+            if (result.code == 20000) {
               //关闭对话框
               this.dialog.dialogChapterFormVisible = false;
               //提示信息
@@ -179,13 +365,13 @@
 
               //刷新页面
               this.getChapertViodeByCourseId();
-            }else {
+            } else {
               this.$message({
                 type: "error",
                 message: "章节信息修改失败"
               });
-              this.chapter.title="";
-              this.chapter.sort="";
+              this.chapter.title = "";
+              this.chapter.sort = "";
             }
           }
         ).catch(
@@ -195,8 +381,8 @@
                 type: "error",
                 message: "出现严重错误，章节信息修改失败，请查看后台日志"
               });
-              this.chapter.title="";
-              this.chapter.sort="";
+              this.chapter.title = "";
+              this.chapter.sort = "";
             }
           }
         );
@@ -206,10 +392,10 @@
       saveChapterInfo() {
         let courseInfo = this.chapter;
         this.chapter.courseId = this.courseId;
-        console.log("要添加的课程信息："+courseInfo);
+        console.log("要添加的课程信息：" + courseInfo);
         chapterApi.saveChapter(courseInfo).then(
           result => {
-            if (result.code ==20000){
+            if (result.code == 20000) {
               //关闭对话框
               this.dialog.dialogChapterFormVisible = false;
               //提示信息
@@ -217,20 +403,19 @@
                 type: "success",
                 message: "章节信息添加成功"
               });
-              this.chapter.title="";
-              this.chapter.sort="";
+              this.chapter.title = "";
+              this.chapter.sort = "";
 
               //刷新页面
               this.getChapertViodeByCourseId();
-            }else {
+            } else {
               this.$message({
                 type: "error",
                 message: "章节信息添加失败"
               });
-              this.chapter.title="";
-              this.chapter.sort="";
+              this.chapter.title = "";
+              this.chapter.sort = "";
             }
-
 
 
           }
@@ -240,16 +425,15 @@
               type: "error",
               message: "章节信息添加失败"
             });
-            this.chapter.title="";
-            this.chapter.sort="";
+            this.chapter.title = "";
+            this.chapter.sort = "";
           }
         );
       },
 
 
-
       //删除章节
-      deleteChapter(id){
+      deleteChapter(id) {
 
         this.$confirm('确定删除这个章节吗?', '提示', {
           confirmButtonText: '确定',
@@ -258,7 +442,7 @@
         }).then(() => {
           chapterApi.deleteChapter(id).then(
             result => {
-              if (result.code==20000){
+              if (result.code == 20000) {
                 //提示信息
                 this.$message({
                   type: "success",
@@ -267,7 +451,7 @@
                 //刷新页面
                 this.getChapertViodeByCourseId();
 
-              }else {
+              } else {
                 //提示信息
                 this.$message({
                   type: "error",
@@ -285,8 +469,6 @@
         });
 
       },
-
-
 
 
     }
