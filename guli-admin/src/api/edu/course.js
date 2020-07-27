@@ -35,4 +35,16 @@ export default {
     })
 
   },
+
+  //4.根据课程id查询课程确认信息
+  getPublishCourseInfoById(id){
+    return request({
+
+      url: `/eduservice/course/publish/${id}`,
+      method: 'get',
+
+    })
+
+  },
+
 }
