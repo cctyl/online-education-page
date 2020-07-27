@@ -24,7 +24,7 @@
 
     <div>
       <el-button @click="previous">返回修改</el-button>
-      <el-button :disabled="saveBtnDisabled" type="primary" @click="publish">发布课程</el-button>
+      <el-button :disabled="saveBtnDisabled" type="primary" @click="publishCourse">发布课程</el-button>
     </div>
 
   </div>
@@ -57,10 +57,7 @@
         this.$router.push(({path: '/course/chapter/1'}))
       },
 
-      publish() {
-        console.log('publish')
-        this.$router.push({ path: '/course/list' })
-      },
+
 
 
       //获取课程确认信息
@@ -90,7 +87,36 @@
             });
           }
         );
-      }
+      },
+
+
+      //课程的最终发布
+      publishCourse(){
+        courseApi.publishCourseInfoById(this.courseId).then(
+          result => {
+            if (result.code==20000){
+
+              this.$router.push({ path: '/course/list' })
+            }else {
+              this.$message({
+                type: "error",
+                message: "出现错误："+result.message
+              });
+            }
+
+
+          }
+        ).catch(
+          reason => {
+
+            this.$message({
+              type: "error",
+              message: "出现严重错误："+reason
+            });
+          }
+        );
+
+      },
 
     }
 

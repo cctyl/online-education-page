@@ -47,4 +47,16 @@ export default {
 
   },
 
+
+  //5.最终发布课程
+  publishCourseInfoById(id){
+    return request({
+
+      url: `/eduservice/course/publish/${id}`,
+      method: 'put',
+
+    })
+
+  },
+
 }
