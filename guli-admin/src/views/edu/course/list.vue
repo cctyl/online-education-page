@@ -24,7 +24,8 @@
             :value="teacher.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="课程类别">
+
+      <el-form-item label="一级分类">
         <el-select
           @change="subjectLevelOneChanged"
           v-model="courseQuery.subjectParentId"
@@ -35,7 +36,9 @@
             :label="subject.title"
             :value="subject.id"/>
         </el-select>
+      </el-form-item>
 
+      <el-form-item label="二级分类">
         <!-- 二级分类 -->
         <el-select v-model="courseQuery.subjectId" placeholder="请选择">
           <el-option
@@ -45,8 +48,8 @@
             :value="subject.id"/>
         </el-select>
 
-      </el-form-item>
 
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -132,7 +135,8 @@
         teacherList:[],
         courseQuery: {
           //条件封装对象
-
+          subjectId: '',
+          subjectParentId: '',
         },
 
 
@@ -171,6 +175,14 @@
         }
         this.courseQuery.subjectId = this.subjectIdbak;
 
+      },
+
+      subjectLevelTwoChanged(value) {
+
+        console.log("执行了subjectLevelTwoChanged---:"+value);
+        console.log("此时courseQuery.subjectId:"+this.courseQuery.subjectId);
+
+        this.courseQuery.subjectId = value;
       },
 
       //获取课程数据
