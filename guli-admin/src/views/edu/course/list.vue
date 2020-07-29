@@ -222,7 +222,10 @@
       //清空条件查询框数据
       resetData() {
 
-        this.courseQuery = {};
+        this.courseQuery = {
+          subjectId: '',
+          subjectParentId: ''
+        };
         this.getList(1);
       },
 
