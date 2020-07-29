@@ -96,7 +96,7 @@
           </router-link>
 
           <el-button type="danger" size="mini" icon="el-icon-delete"
-                     @click="removeTeacherById(scope.row.id,scope.row.name)">删除
+                     @click="removeCourseById(scope.row.id,scope.row.title)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -239,45 +239,49 @@
             this.teacherList = result.data.items;
           }
         );
-      }
-      /*
+      },
+
+      //删除课程
+      removeCourseById(courseId, name) {
+
+        this.$confirm(`真的要删除课程：${name}吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+
+
+          course.removeCourseById(courseId).then(
+            response => {
+              if (response.code==20000){
+                this.getList();
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              }else {
+                this.$message({
+                  type: 'error',
+                  message: '删除失败'
+                });
+              }
+
+
+            }
+          ).catch(
+            error => {
+              console.log(JSON.stringify(error));
+
+            }
+          );
 
 
 
-
-       //删除讲师
-       removeTeacherById(teacherId, name) {
-
-         this.$confirm(`真的要删除讲师：${name}吗？`, '提示', {
-           confirmButtonText: '确定',
-           cancelButtonText: '取消',
-           type: 'warning',
-           center: true
-         }).then(() => {
+        });
 
 
-           teacher.removeTeacherById(teacherId).then(
-             response => {
-               console.log(JSON.stringify(response));
-               this.getList();
-
-             }
-           ).catch(
-             error => {
-               console.log(JSON.stringify(error));
-
-             }
-           );
-
-           this.$message({
-             type: 'success',
-             message: '删除成功!'
-           });
-
-         });
-
-
-       },*/
+      },
 
 
     }

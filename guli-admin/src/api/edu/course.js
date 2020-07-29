@@ -60,6 +60,7 @@ export default {
   },
 
 
+  //分页查询课程信息
   getCourseListPage(page,limit,courseQuery){
 
     return request({
@@ -73,4 +74,17 @@ export default {
     })
 
   },
+
+  removeCourseById(courseId){
+
+    return request({
+
+
+
+      url: `/eduservice/course/${courseId}`,
+      method: 'delete',
+
+
+    })
+  }
 }
