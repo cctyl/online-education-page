@@ -59,4 +59,18 @@ export default {
 
   },
 
+
+  getCourseListPage(page,limit,courseQuery){
+
+    return request({
+
+
+
+      url: `/eduservice/course/pageCourseCondition/${page}/${limit}`,
+      method: 'post',
+      data: courseQuery
+
+    })
+
+  },
 }
