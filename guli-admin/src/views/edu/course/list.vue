@@ -3,7 +3,7 @@
     <el-form :inline="true" :model="courseQuery" class="demo-form-inline">
 
       <el-form-item label="课程名称">
-        <el-input v-model="courseQuery.name" placeholder="课程名称"></el-input>
+        <el-input v-model="courseQuery.title" placeholder="课程名称"></el-input>
       </el-form-item>
       <el-form-item label="最高价">
         <el-input v-model="courseQuery.maxPrice" placeholder="课程名称"></el-input>
