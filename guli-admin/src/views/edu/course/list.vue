@@ -91,7 +91,7 @@
 
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <router-link :to="'/teacher/edit/'+scope.row.id">
+          <router-link :to="'/course/info/'+scope.row.id">
             <el-button type="primary" size="mini" icon="el-icon-edit">修改</el-button>
           </router-link>
 
@@ -132,7 +132,7 @@
         subjectIdbak: '',
         subjectNestedList: [],//一级分类列表
         subSubjectList: [],//二级分类列表
-        teacherList:[],
+        teacherList: [],
         courseQuery: {
           //条件封装对象
           subjectId: '',
@@ -179,8 +179,8 @@
 
       subjectLevelTwoChanged(value) {
 
-        console.log("执行了subjectLevelTwoChanged---:"+value);
-        console.log("此时courseQuery.subjectId:"+this.courseQuery.subjectId);
+        console.log("执行了subjectLevelTwoChanged---:" + value);
+        console.log("此时courseQuery.subjectId:" + this.courseQuery.subjectId);
 
         this.courseQuery.subjectId = value;
       },
@@ -190,15 +190,15 @@
         this.page = page;
         course.getCourseListPage(this.page, this.limit, this.courseQuery)
           .then(resopnse => {
-            if (resopnse.code==20000){
+            if (resopnse.code == 20000) {
               //请求成功
               this.total = resopnse.data.total;
               this.list = resopnse.data.items;
 
-            }else {
+            } else {
               this.$message({
-                type:"error",
-                message:"出现错误，查询数据失败"
+                type: "error",
+                message: "出现错误，查询数据失败"
               });
             }
 
@@ -207,8 +207,8 @@
           .catch(error => {
 
             this.$message({
-              type:"error",
-              message:"出现错误，查询数据失败，error："+error
+              type: "error",
+              message: "出现错误，查询数据失败，error：" + error
             });
 
           });
@@ -254,13 +254,13 @@
 
           course.removeCourseById(courseId).then(
             response => {
-              if (response.code==20000){
+              if (response.code == 20000) {
                 this.getList();
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
                 });
-              }else {
+              } else {
                 this.$message({
                   type: 'error',
                   message: '删除失败'
@@ -275,7 +275,6 @@
 
             }
           );
-
 
 
         });
