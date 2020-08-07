@@ -87,8 +87,27 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传视频">
-          <!-- TODO -->
+          <el-upload
+            :on-success="handleVodUploadSuccess"
+            :on-remove="handleVodRemove"
+            :before-remove="beforeVodRemove"
+            :on-exceed="handleUploadExceed"
+            :file-list="fileList"
+            :action="BASE_API+'/eduvod/video/upload'"
+            :limit="1"
+            class="upload-demo">
+            <el-button size="small" type="primary">上传视频</el-button>
+            <el-tooltip placement="right-end">
+              <div slot="content">最大支持1G，<br>
+                支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
+                GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
+                MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
+                SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
+              <i class="el-icon-question"/>
+            </el-tooltip>
+          </el-upload>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="videoDialog.dialogVideoFormVisible = false">取 消</el-button>
@@ -116,18 +135,19 @@
 <script>
   import chapterApi from "@/api/edu/chapter";
   import videoApi from "@/api/edu/video";
+  import vodApi from "@/api/edu/vod";
 
   let id = 1000;
   export default {
     name: "chapter",
     data() {
       return ({
-
+        fileList:[],
         saveBtnDisabled: false,
         updateChapterFormVisible: false,
         courseId: '',
         chapterNestedList: [],
-
+        BASE_API: process.env.BASE_API,
         chapter: {// 章节对象
           title: '',
           sort: 0
@@ -147,6 +167,8 @@
         video: {
 
           sort: 0,
+          videoSourceId:'',
+          videoOriginalName:'',
         },
 
       })
@@ -174,6 +196,61 @@
 
       //================================小节节操作相关==================================
 
+      //成功回调
+      handleVodUploadSuccess(response, file, fileList) {
+        console.log(JSON.stringify(file));
+        this.video.videoSourceId = response.data.videoId;
+        this.fileList=[];
+        this.video.videoOriginalName = file.name;
+        this.$message({
+          type: "success",
+          message: "上传成功"
+        });
+
+
+      },
+      //视图上传多于一个视频
+      handleUploadExceed(files, fileList) {
+        this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+      },
+
+      //删除之前的确认
+      beforeVodRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${file.name}？`);
+      },
+      //真正删除视频
+      handleVodRemove(file, fileList) {
+
+        vodApi.deleteVod(this.video.videoSourceId).then(
+          result => {
+            if (result.code==20000){
+              this.video.videoSourceId ="";
+              this.video.videoOriginalName ="";
+              this.fileList =[];
+              this.$message({
+                type: "success",
+                message: "视频删除成功"
+              });
+
+            }else{
+
+              this.$message({
+                type: "error",
+                message: "视频删除失败："+JSON.stringify(result)
+              });
+            }
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type: "error",
+              message: "视频删除失败："+JSON.stringify(reason)
+            });
+
+          }
+        );
+
+      },
 
       //添加/修改小节
       saveOrUpdateVideo(flag) {
