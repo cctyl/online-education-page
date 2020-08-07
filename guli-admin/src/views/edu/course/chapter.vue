@@ -200,7 +200,7 @@
       handleVodUploadSuccess(response, file, fileList) {
         console.log(JSON.stringify(file));
         this.video.videoSourceId = response.data.videoId;
-        this.fileList=[];
+
         this.video.videoOriginalName = file.name;
         this.$message({
           type: "success",
@@ -287,6 +287,7 @@
             if (result.code == 20000) {
               //关闭对话框
               this.videoDialog.dialogVideoFormVisible = false;
+              this.fileList=[];
               //提示信息
               this.$message({
                 type: "success",
