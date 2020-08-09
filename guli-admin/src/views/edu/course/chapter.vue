@@ -39,7 +39,7 @@
                 :key="video.id">
                 <p>{{ video.title }}
                   <span class="acts">
-                        <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video)">编辑</el-button>
+                        <el-button type="text" @click="openUpdateVideoDialog(chapter.id,video.id)">编辑</el-button>
                         <el-button type="text" @click="deleteVideo(video.id)">删除</el-button>
                     </span>
                 </p>
@@ -50,7 +50,6 @@
 
       </el-main>
     </el-container>
-
 
 
     <!-- 添加和修改章节对话框 -->
@@ -68,7 +67,6 @@
         <el-button type="primary" @click="saveOrUpdate(dialog.flag)">确 定</el-button>
       </div>
     </el-dialog>
-
 
 
     <!--小节添加和修改对话框-->
@@ -102,7 +100,8 @@
                 支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
                 GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
                 MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
-                SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
+                SWF、TS、VOB、WMV、WEBM 等视频格式上传
+              </div>
               <i class="el-icon-question"/>
             </el-tooltip>
           </el-upload>
@@ -128,7 +127,6 @@
     </el-form>
 
 
-
   </div>
 </template>
 
@@ -142,7 +140,7 @@
     name: "chapter",
     data() {
       return ({
-        fileList:[],
+        fileList: [],
         saveBtnDisabled: false,
         updateChapterFormVisible: false,
         courseId: '',
@@ -167,8 +165,8 @@
         video: {
 
           sort: 0,
-          videoSourceId:'',
-          videoOriginalName:'',
+          videoSourceId: '',
+          videoOriginalName: '',
         },
 
       })
@@ -202,10 +200,14 @@
         this.video.videoSourceId = response.data.videoId;
 
         this.video.videoOriginalName = file.name;
+
+        console.log(JSON.stringify(this.fileList));
         this.$message({
           type: "success",
           message: "上传成功"
         });
+
+
 
 
       },
@@ -223,20 +225,20 @@
 
         vodApi.deleteVod(this.video.videoSourceId).then(
           result => {
-            if (result.code==20000){
-              this.video.videoSourceId ="";
-              this.video.videoOriginalName ="";
-              this.fileList =[];
+            if (result.code == 20000) {
+              this.video.videoSourceId = "";
+              this.video.videoOriginalName = "";
+              this.fileList = [];
               this.$message({
                 type: "success",
                 message: "视频删除成功"
               });
 
-            }else{
+            } else {
 
               this.$message({
                 type: "error",
-                message: "视频删除失败："+JSON.stringify(result)
+                message: "视频删除失败：" + JSON.stringify(result)
               });
             }
           }
@@ -244,7 +246,7 @@
           reason => {
             this.$message({
               type: "error",
-              message: "视频删除失败："+JSON.stringify(reason)
+              message: "视频删除失败：" + JSON.stringify(reason)
             });
 
           }
@@ -271,23 +273,23 @@
 
 
       //清空video数据
-      clearVideo(){
+      clearVideo() {
 
         this.video = {
           sort: 0
         };
 
-        console.log("清空后的数据情况："+JSON.stringify(this.video));
+        console.log("清空后的数据情况：" + JSON.stringify(this.video));
       },
 
       //添加小节
       saveVideo() {
-        videoApi.saveChapter(this.video).then(
+        videoApi.saveVideo(this.video).then(
           result => {
             if (result.code == 20000) {
               //关闭对话框
               this.videoDialog.dialogVideoFormVisible = false;
-              this.fileList=[];
+              this.fileList = [];
               //提示信息
               this.$message({
                 type: "success",
@@ -361,7 +363,7 @@
 
 
       //删除小节
-      deleteVideo(videoId){
+      deleteVideo(videoId) {
 
         this.$confirm('确定删除这个小节吗?', '提示', {
           confirmButtonText: '确定',
@@ -369,36 +371,36 @@
           type: 'warning'
         }).then(() => {
 
-            videoApi.deleteVideo(videoId).then(
-              result => {
+          videoApi.deleteVideo(videoId).then(
+            result => {
 
-                if (result.code == 20000) {
-                  //提示信息
-                  this.$message({
-                    type: "success",
-                    message: "删除成功"
-                  });
-                  //刷新页面
-                  this.getChapertViodeByCourseId();
+              if (result.code == 20000) {
+                //提示信息
+                this.$message({
+                  type: "success",
+                  message: "删除成功"
+                });
+                //刷新页面
+                this.getChapertViodeByCourseId();
 
-                } else {
-                  //提示信息
-                  this.$message({
-                    type: "error",
-                    message: "删除失败"
-                  });
-                }
-
-              }
-            ).catch(
-              reason => {
+              } else {
+                //提示信息
                 this.$message({
                   type: "error",
-                  message: "小节节信息修改失败"
+                  message: "删除失败"
                 });
-                this.clearVideo();
               }
-            );
+
+            }
+          ).catch(
+            reason => {
+              this.$message({
+                type: "error",
+                message: "小节节信息修改失败"
+              });
+              this.clearVideo();
+            }
+          );
 
 
         }).catch(() => {
@@ -427,14 +429,36 @@
       },
 
       //打开修改小节对话框
-      openUpdateVideoDialog(chapterId,video) {
-        console.log("openUpdateVideoDialog--chapterId是：" + chapterId);
-        console.log("video信息：" + JSON.stringify(video));
-        //给video中的两个属性赋值
-        this.video=video;
-        this.video.chapterId = chapterId;
-        this.video.courseId = this.courseId;
+      openUpdateVideoDialog(chapterId, videoId) {
 
+        //给video中的两个属性赋值
+
+
+        videoApi.getVideo(videoId).then(
+          result => {
+            if (result.code == 20000) {
+
+              console.log(result);
+              this.video = result.data.item;
+            } else {
+              this.$message({
+                type: "error",
+                message: "小节信息获取失败"
+              });
+
+            }
+
+
+          }
+        ).catch(
+          reason => {
+            this.$message({
+              type: "error",
+              message: "小节信息获取失败"
+            });
+
+          }
+        );
 
         //设置标记，表明这是一个添加对话框
         this.videoDialog.flag = false;

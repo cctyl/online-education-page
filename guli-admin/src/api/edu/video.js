@@ -1,11 +1,20 @@
 import request from '@/utils/request'
 
 export default {
+  //1.获取小节信息
+  getVideo(id){
+    return request({
+      url: `/eduservice/eduvideo/${id}`,
+      method: 'get',
+
+
+    })
+  },
 
 
 
   //2.添加小节信息
-  saveChapter(videoInfo){
+  saveVideo(videoInfo){
     return request({
       url: `/eduservice/eduvideo/`,
       method: 'post',
