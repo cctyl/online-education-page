@@ -1,8 +1,8 @@
 {
-  "name": "guli-user",
+  "name": "guli",
   "version": "1.0.0",
-  "description": "web for user",
-  "author": "cctyl",
+  "description": "谷粒学院前台网站",
+  "author": "Helen <55317332@qq.com>",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -13,7 +13,8 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-awesome-swiper": "^3.1.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
