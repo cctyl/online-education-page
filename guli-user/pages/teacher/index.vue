@@ -193,5 +193,12 @@
   </div>
 </template>
 <script>
-  export default {};
+  import bannerApi from "@/api/banner"
+  export default {
+    data(){
+      return({})
+    },
+
+
+  };
 </script>

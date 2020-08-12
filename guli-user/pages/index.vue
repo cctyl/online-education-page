@@ -4,16 +4,14 @@
     <!-- 幻灯片 开始 -->
     <div v-swiper:mySwiper="swiperOption">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" style="background: #040B1B;">
-          <a target="_blank" href="/">
-            <img src="~/assets/photo/banner/1525939573202.jpg" alt="首页banner">
+
+
+        <div v-for="banner in bannerList" :key="banner.id" class="swiper-slide" style="background: #040B1B;">
+          <a target="_blank" :href="banner.linkUrl">
+            <img :src="banner.imageUrl" :alt="banner.title">
           </a>
         </div>
-        <div class="swiper-slide" style="background: #040B1B;">
-          <a target="_blank" href="/">
-            <img src="~/assets/photo/banner/1525939573202.jpg" alt="首页banner">
-          </a>
-        </div>
+
       </div>
       <div class="swiper-pagination swiper-pagination-white"></div>
       <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
@@ -369,6 +367,8 @@
 </template>
 
 <script>
+  import bannerApi from "@/api/banner.js"
+  import indexApi from "@/api/index.js"
   export default {
     data () {
       return {
@@ -382,7 +382,46 @@
             nextEl: '.swiper-button-next',//下一页dom节点
             prevEl: '.swiper-button-prev'//前一页dom节点
           }
-        }
+        },
+        bannerList:[],
+        teacherList:[],
+        courseList:[],
+      }
+    },
+    created() {
+      this.getBanner();
+    },
+    methods:{
+      getBanner(){
+        bannerApi.getListBanner( ).then(
+          response=>{
+
+            this.bannerList =  response.data.data.items;
+
+          }
+        ).catch(
+          error=>{
+            console.log(error);
+          }
+        );
+
+
+      },
+
+      getIndexData(){
+        indexApi.getIndexData().then(
+          response=>{
+
+            this.teacherList =  response.data.data.teacherList;
+            this.courseList =  response.data.data.courseList;
+
+          }
+        ).catch(
+          error=>{
+            console.log(error);
+          }
+        );
+
       }
     }
   }
