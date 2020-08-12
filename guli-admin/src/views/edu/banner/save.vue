@@ -2,35 +2,24 @@
   <div class="app-container">
 
     <el-form label-width="120px">
-      <el-form-item label="讲师名称">
-        <el-input v-model="teacher.name"/>
+      <el-form-item label="banner标题">
+        <el-input v-model="banner.title"/>
       </el-form-item>
-      <el-form-item label="讲师排序">
-        <el-input-number v-model="teacher.sort" controls-position="right" min='0'/>
+      <el-form-item label="排序">
+        <el-input-number v-model="banner.sort" controls-position="right" min='0'/>
       </el-form-item>
-      <el-form-item label="讲师头衔">
-        <el-select v-model="teacher.level" clearable placeholder="请选择">
-          <!--
-            数据类型一定要和取出的json中的一致，否则没法回填
-            因此，这里value使用动态绑定的值，保证其数据类型是number
-          -->
-          <el-option :value="1" label="高级讲师"/>
-          <el-option :value="2" label="首席讲师"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="讲师资历">
-        <el-input v-model="teacher.career"/>
-      </el-form-item>
-      <el-form-item label="讲师简介">
-        <el-input v-model="teacher.intro" :rows="10" type="textarea"/>
+
+
+      <el-form-item label="banner跳转链接">
+        <el-input v-model="banner.linkUrl" :rows="10" type="textarea"/>
       </el-form-item>
 
 
       <!-- 讲师头像 -->
-      <el-form-item label="讲师头像">
+      <el-form-item label="banner缩略图">
 
         <!-- 头衔缩略图 -->
-        <pan-thumb :image="teacher.avatar"/>
+        <pan-thumb :image="banner.imageUrl"/>
         <!-- 文件上传按钮 -->
         <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像
         </el-button>
@@ -63,7 +52,7 @@
 
 <script>
 
-  import teacher from "@/api/edu/teacher"
+  import bannerApi from '@/api/edu/banner.js'
   import ImageCropper from '@/components/ImageCropper'
   import PanThumb from '@/components/PanThumb'
 
@@ -74,12 +63,12 @@
 
       return {
 
-        teacher: {
+        banner: {
           id: "",
-          name: '',
+          title: '',
           sort: 0,
-          level: 1,
-          avatar: "https://online-tyl-edu.oss-cn-shenzhen.aliyuncs.com/2020/07/05/4000ca008b84444bb8687e6162f6693efile.png"
+          linkUrl: 1,
+          imageUrl: "https://online-tyl-edu.oss-cn-shenzhen.aliyuncs.com/2020/07/05/4000ca008b84444bb8687e6162f6693efile.png"
         },
         saveBtnDisabled: false,
         imagecropperShow: false,
@@ -109,7 +98,7 @@
       },
       cropSuccess(data) {
         //拿到返回的图片地址
-        this.teacher.avatar = data.url;
+        this.banner.imageUrl = data.url;
         //关闭窗口
         this.close();
       },
@@ -117,10 +106,10 @@
       //页面初始化执行的方法
       initPage() {
         if (this.$route.params && this.$route.params.id) {
-          this.teacher.id = this.$route.params.id;
-          this.getInfo(this.teacher.id);
+          this.banner.id = this.$route.params.id;
+          this.getInfo(this.banner.id);
         } else {
-          this.teacher = {};
+          this.banner = {};
         }
 
       },
@@ -130,9 +119,9 @@
       saveOrUpdate() {
 
         if (this.$route.params && this.$route.params.id) {
-          console.log("执行修改方法：" + this.teacher.id);
+          console.log("执行修改方法：" + this.banner.id);
           //执行update方法
-          teacher.updateTeacherInfo(this.teacher)
+          bannerApi.updateBannerInfo(this.banner)
             .then(
               reponse => {
 
@@ -141,7 +130,7 @@
                   type: 'success'
                 });
 
-                this.$router.push({path: '/teacher/table'});
+                this.$router.push({path: '/banner/list'});
               }
             ).catch(
             error => {
@@ -151,9 +140,9 @@
           );
 
         } else {
-          console.log("执行保存方法：" + this.teacher.id);
+          console.log("执行保存方法：" + this.banner.id);
 
-          this.saveTeacher();
+          this.saveBanner();
         }
 
       },
@@ -161,9 +150,9 @@
       //获取讲师数据 ，
       getInfo(id) {
 
-        teacher.getTeacherById(id).then(
+        bannerApi.getBannerById(id).then(
           response => {
-            this.teacher = response.data.item;
+            this.banner = response.data.item;
 
           }
         ).catch(
@@ -173,8 +162,8 @@
         );
       },
 
-      saveTeacher() {
-        teacher.addTeacher(this.teacher).then(
+      saveBanner() {
+        bannerApi.addBanner(this.banner).then(
           response => {
             //提示 添加成功
             this.$confirm('添加成功，继续添加或者查看已添加数据？', '提示', {
@@ -182,12 +171,12 @@
               cancelButtonText: '继续添加',
               type: 'warning'
             }).then(() => {
-              this.$router.push({path: '/teacher/table'})
+              this.$router.push({path: '/banner/list'})
             }).catch(() => {
 
             });
             //清空列表输入，用于下次添加
-            this.teacher = {};
+            this.banner = {};
           }
         ).catch(
           response => {
@@ -196,7 +185,7 @@
 
             });
 
-            this.teacher = {}
+            this.banner = {}
           }
         );
       }

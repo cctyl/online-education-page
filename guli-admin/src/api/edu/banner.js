@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export default {
 
-  //查询所有讲师
+
   getAllBanner(){
 
     return request({
@@ -11,7 +11,7 @@ export default {
     })
   },
 
-  //1.讲师列表（条件分页查询）
+
   getBannerListPage(current,limit) {
 
     return request({
@@ -23,7 +23,7 @@ export default {
   },
 
 
-  //删除讲师
+  //删除
   removeBannerById(id){
 
     return request({
@@ -32,7 +32,7 @@ export default {
     })
   },
 
-  //添加讲师
+  //添加
   addBanner(banner){
 
     return request({
@@ -43,7 +43,7 @@ export default {
     })
   },
 
-  //根据ID查询讲师信息
+  //根据ID查询信息
   getBannerById(id){
 
     return request({
@@ -55,7 +55,7 @@ export default {
   },
 
 
-  //修改讲师数据
+  //修改
   updateBannerInfo(banner){
 
     return request({
