@@ -95,6 +95,8 @@
 
       //验证码倒计时
       timeDown() {
+
+
         let result = setInterval(() => {
           --this.second;
           this.codeTest = this.second
@@ -111,6 +113,7 @@
 
       //注册提交
       submitRegister() {
+
         this.$refs['userForm'].validate((valid) => {
           if (valid) {
             registerApi.userRegister(this.params).then(
@@ -118,7 +121,7 @@
 
 
 
-              if(result.data.code){
+              if(result.data.code==20000){
                 //提示注册成功
                 this.$message({
                   type: 'success',

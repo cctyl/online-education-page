@@ -43,21 +43,73 @@
 <script>
   import '~/assets/css/sign.css'
   import '~/assets/css/iconfont.css'
+  import loginApi from "@/api/login.js"
+  import cookie from 'js-cookie'
 
   export default {
     layout: 'sign',
 
     data () {
       return {
+        //用来传递给登陆接口的数据
         user:{
           mobile:'',
           password:''
         },
+
+        //根据token获取的用户数据
         loginInfo:{}
       }
     },
 
-    methods: {}
+    methods: {
+
+      submitLogin(){
+
+        loginApi.userLogin(this.user)
+          .then(
+            response=>{
+
+              if (response.data.code==20000){
+                debugger
+                //把token存在cookie中、也可以放在localStorage中
+                cookie.set('login_token', response.data.data.token, { domain: 'localhost' });
+                //登录成功根据token获取用户信息
+                loginApi.getLoginInfo().then(response => {
+
+                  if (response.data.code==20000){
+
+                    this.loginInfo = response.data.data.userInfo
+                    //将用户信息记录cookie
+                    cookie.set('guli_ucenter', this.loginInfo, { domain: 'localhost' })
+                    //跳转页面
+                    window.location.href = "/";
+                  }
+                });
+
+
+              }else {
+
+                this.$message({
+                  type: 'error',
+                  message: "注册失败"
+                })
+              }
+
+            }
+
+          );
+      },
+
+      checkPhone (rule, value, callback) {
+        //debugger
+        if (!(/^1[34578]\d{9}$/.test(value))) {
+          return callback(new Error('手机号码格式不正确'))
+        }
+        return callback()
+      },
+
+    }
   }
 </script>
 <style>
