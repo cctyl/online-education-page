@@ -17,7 +17,7 @@ service.interceptors.request.use(
   config => {
     //debugger
     if (cookie.get('login_token')) {
-      config.headers['token'] = cookie.get('guli_token');
+      config.headers['token'] = cookie.get('login_token');
     }
     return config
   },

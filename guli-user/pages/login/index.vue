@@ -75,7 +75,7 @@
                 //把token存在cookie中、也可以放在localStorage中
                 cookie.set('login_token', response.data.data.token, { domain: 'localhost' });
                 //登录成功根据token获取用户信息
-                loginApi.getLoginInfo().then(response => {
+                loginApi.getUserInfoByToken().then(response => {
 
                   if (response.data.code==20000){
 
