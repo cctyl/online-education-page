@@ -140,8 +140,8 @@
   export default {
     data() {
       return ({
-        token:"",
-        loginInfo:{
+        token: "",
+        loginInfo: {
           id: '',
           age: '',
           avatar: '',
@@ -154,10 +154,46 @@
     },
     created() {
 
-      this.getUserInfo();
+
+      if (this.$route.query.token) {
+        this.token = this.$route.query.token;
+        this.wxLogin();
+      } else {
+        this.getUserInfo();
+      }
+
+
     },
     methods: {
 
+      //微信登陆之后，跳转首页获取用户信息
+      wxLogin() {
+        cookie.set('login_token', this.token, {domain: 'localhost'});
+
+        loginApi.getUserInfoByToken().then(
+          response=>{
+
+
+
+
+
+                this.loginInfo = response.data.data.userInfo;
+                //将用户信息记录cookie
+                cookie.set('guli_ucenter', this.loginInfo, {domain: 'localhost'});
+
+                //清除参数
+                this.$route.query.token = '';
+
+
+          }
+
+
+        );
+
+
+      },
+
+      //根据token获取用户数据
       getUserInfo() {
 
         var jsonStr = cookie.get("guli_ucenter");
@@ -167,6 +203,8 @@
         }
 
       },
+
+      //用户退出登陆，其实就是清空token和userinfo
       logout() {
         //debugger
         cookie.set('guli_ucenter', "", {domain: 'localhost'})
