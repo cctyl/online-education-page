@@ -23,24 +23,26 @@
           <!-- /无数据提示 结束-->
           <article class="i-teacher-list" v-if="data.total>0">
             <ul class="of">
-              <li v-for="teacher in data.items">
-              <section class="i-teach-wrap">
-                <div class="i-teach-pic">
-                  <a :href="'/teacher/'+teacher.id" :title="teacher.name" target="_blank">
-                    <img :src="teacher.avatar" alt>
-                  </a>
-                </div>
-                <div class="mt10 hLh30 txtOf tac">
-                  <a :href="'/teacher/'+teacher.id" :title="teacher.name"  v-text="teacher.name" target="_blank" class="fsize18 c-666"></a>
-                </div>
-                <div class="hLh30 txtOf tac">
-                  <span class="fsize14 c-999" v-text="teacher.intro"></span>
-                </div>
-                <div class="mt15 i-q-txt">
-                  <p class="c-999 f-fA" v-text="teacher.career"></p>
-                </div>
-              </section>
-            </li></ul>
+              <li v-for="teacher in data.items" :key="teacher.id">
+                <section class="i-teach-wrap">
+                  <div class="i-teach-pic">
+                    <a :href="'/teacher/'+teacher.id" :title="teacher.name" target="_blank">
+                      <img :src="teacher.avatar" alt>
+                    </a>
+                  </div>
+                  <div class="mt10 hLh30 txtOf tac">
+                    <a :href="'/teacher/'+teacher.id" :title="teacher.name" v-text="teacher.name" target="_blank"
+                       class="fsize18 c-666"></a>
+                  </div>
+                  <div class="hLh30 txtOf tac">
+                    <span class="fsize14 c-999" v-text="teacher.intro"></span>
+                  </div>
+                  <div class="mt15 i-q-txt">
+                    <p class="c-999 f-fA" v-text="teacher.career"></p>
+                  </div>
+                </section>
+              </li>
+            </ul>
             <div class="clear"></div>
           </article>
         </div>
@@ -48,13 +50,34 @@
         <div>
           <div class="paging">
             <!-- undisable这个class是否存在，取决于数据属性hasPrevious -->
-            <a href="#" title="首页">首</a>
-            <a href="#" title="前一页">&lt;</a>
-            <a href="#" title="第1页" class="current undisable">1</a>
-            <a href="#" title="第2页">2</a>
-            <a href="#" title="后一页">&gt;</a>
-            <a href="#" title="末页">末</a>
-            <div class="clear"></div>
+            <a
+              :class="{undisable: !data.hasPrevious}"
+              href="#"
+              title="首页"
+              @click.prevent="gotoPage(1)">首页</a>
+            <a
+              :class="{undisable: !data.hasPrevious}"
+              href="#"
+              title="前一页"
+              @click.prevent="gotoPage(data.current-1)">&lt;</a>
+            <a
+              v-for="page in data.pages"
+              :key="page"
+              :class="{current: data.current == page, undisable: data.current == page}"
+              :title="'第'+page+'页'"
+              href="#"
+              @click.prevent="gotoPage(page)">{{ page }}</a>
+            <a
+              :class="{undisable: !data.hasNext}"
+              href="#"
+              title="后一页"
+              @click.prevent="gotoPage(data.current+1)">&gt;</a>
+            <a
+              :class="{undisable: !data.hasNext}"
+              href="#"
+              title="末页"
+              @click.prevent="gotoPage(data.hasNext?data.pages:data.current)">末页</a>
+            <div class="clear"/>
           </div>
         </div>
         <!-- 公共分页 结束 -->
@@ -70,10 +93,18 @@
   export default {
     asyncData({params, error}) {
       return teacherApi.getPageList(1, 8).then(response => {
-        console.log(response.data.data);
         return {data: response.data.data}
       });
     },
+    methods:{
+      //页面跳转
+      gotoPage(page){
+        debugger
+        teacherApi.getPageList(page, 8).then(response => {
+          this.data = response.data.data
+        })
+      },
+    }
 
   };
 </script>

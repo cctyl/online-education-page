@@ -8,7 +8,8 @@ export default {
       url: `/eduservice/teacher/front/${page}/${limit}`,
       method: 'post'
     })
-  }
+  },
+
 
 
 
