@@ -32,7 +32,7 @@
             <dd class="c-s-dl-li">
               <ul class="clearfix">
                 <li v-for="(item,index) in subSubjectList" :key="index">
-                  <a :title="item.title" href="#" v-text="item.title"></a>
+                  <a :title="item.title" @click="searchTwo(item.id,index)" href="#" v-text="item.title"></a>
                 </li>
 
               </ul>
