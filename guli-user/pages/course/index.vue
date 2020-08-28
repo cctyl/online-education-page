@@ -18,8 +18,8 @@
                 <li>
                   <a title="全部" href="#">全部</a>
                 </li>
-                <li v-for="(item,index) in subjectNestedList" :key="index">
-                  <a :title="item.title" href="#" @click="searchOne(item.id,index)"  v-text="item.title"></a>
+                <li v-for="(item,index) in subjectNestedList" :key="index" :class="{active:oneIndex==index}">
+                  <a :title="item.title" href="#" @click="searchOne(item.id,index)"  v-text="item.title"  ></a>
                 </li>
 
               </ul>
@@ -32,7 +32,7 @@
             <dd class="c-s-dl-li">
               <ul class="clearfix">
                 <li v-for="(item,index) in subSubjectList" :key="index">
-                  <a :title="item.title" @click="searchTwo(item.id,index)" href="#" v-text="item.title"></a>
+                  <a :title="item.title" @click="searchTwo(item.id,index)" href="#" v-text="item.title" :class="{active:twoIndex==index}"></a>
                 </li>
 
               </ul>
@@ -49,20 +49,27 @@
           </section>
           <section class="fl">
             <ol class="js-tap clearfix">
-              <li>
-                <a title="关注度" href="#">关注度</a>
+              <li :class="{'current bg-orange':buyCountSort!=''}">
+                <a title="销量" href="javascript:void(0);" @click="searchBuyCount(countFlag)">销量
+                  <span :class="{hide:buyCountSort==''}" v-text="countFlag?'↑':'↓'"></span>
+                </a>
               </li>
-              <li>
-                <a title="最新" href="#">最新</a>
+
+              <li :class="{'current bg-orange':gmtCreateSort!=''}">
+                <a title="最新" href="javascript:void(0);" @click="searchGmtCreate(timeFlag)">最新
+                  <span :class="{hide:gmtCreateSort==''}"  v-text="timeFlag?'↑':'↓'">↓</span>
+                </a>
               </li>
-              <li class="current bg-orange">
-                <a title="价格" href="#">价格&nbsp;
-                  <span>↓</span>
+
+              <li :class="{'current bg-orange':priceSort!=''}">
+                <a title="价格" href="javascript:void(0);" @click="searchPrice(priceFlag)">价格&nbsp;
+                  <span :class="{hide:priceSort==''}"  v-text="priceFlag?'↑':'↓'">↓</span>
                 </a>
               </li>
             </ol>
           </section>
         </div>
+
         <div class="mt40">
           <!-- /无数据提示 开始-->
           <section class="no-data-wrap" v-if="data.total==0">
@@ -100,6 +107,7 @@
             <div class="clear"></div>
           </article>
         </div>
+
         <!-- 公共分页 开始 -->
         <div>
           <div class="paging">
@@ -135,6 +143,7 @@
           </div>
         </div>
         <!-- 公共分页 结束 -->
+
       </section>
     </section>
     <!-- /课程列表 结束 -->
@@ -154,7 +163,10 @@
         twoIndex:-1,
         buyCountSort:"",
         gmtCreateSort:"",
-        priceSort:""
+        priceSort:"",
+        countFlag:true,
+        timeFlag:true,
+        priceFlag:true
 
       })
     },
@@ -207,7 +219,68 @@
         courseApi.getPageList(page, 8, this.searchObj).then(response => {
           this.data = response.data.data
         })
-      }
+      },
+
+
+
+
+      //购买量查询
+      searchBuyCount(flag) {
+        if(flag==true){
+
+          this.buyCountSort = "1";
+        }else {
+          this.buyCountSort = "2";
+        }
+
+        this.countFlag = !this.countFlag;
+
+        this.gmtCreateSort = "";
+        this.priceSort = "";
+        this.searchObj.buyCountSort = this.buyCountSort;
+        this.searchObj.gmtCreateSort = this.gmtCreateSort;
+        this.searchObj.priceSort = this.priceSort;
+        this.gotoPage(this.page)
+      },
+      //更新时间查询
+      searchGmtCreate(flag) {
+
+        if(flag==true){
+
+          this.gmtCreateSort = "1";
+        }else {
+          this.gmtCreateSort = "2";
+        }
+
+        this.timeFlag = !this.timeFlag;
+
+        this.buyCountSort = "";
+
+        this.priceSort = "";
+        this.searchObj.buyCountSort = this.buyCountSort;
+        this.searchObj.gmtCreateSort = this.gmtCreateSort;
+        this.searchObj.priceSort = this.priceSort;
+        this.gotoPage(this.page)
+      },
+      //价格查询
+      searchPrice(flag) {
+
+        if(flag==true){
+
+          this.priceSort = "1";
+        }else {
+          this.priceSort = "2";
+        }
+        this.priceFlag = !this.priceFlag;
+
+        this.buyCountSort = "";
+        this.gmtCreateSort = "";
+
+        this.searchObj.buyCountSort = this.buyCountSort;
+        this.searchObj.gmtCreateSort = this.gmtCreateSort;
+        this.searchObj.priceSort = this.priceSort;
+        this.gotoPage(this.page)
+      },
 
 
     }
@@ -215,3 +288,14 @@
 
   };
 </script>
+<style scoped>
+  .active {
+    background: #bdbdbd;
+  }
+  .hide {
+    display: none;
+  }
+  .show {
+    display: block;
+  }
+</style>
