@@ -7,7 +7,9 @@
         \
         <a href="#" title class="c-999 fsize14">课程列表</a>
         \
-        <span class="c-333 fsize14" v-text="course.title"></span>
+        <span class="c-333 fsize14">{{ course.subjectLevelOne }}</span>
+        \
+        <span class="c-333 fsize14">{{ course.subjectLevelTwo }}</span>
       </section>
       <div>
         <article class="c-v-pic-wrap" style="height: 357px;">
