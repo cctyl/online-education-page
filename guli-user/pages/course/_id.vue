@@ -109,7 +109,7 @@
                             </a>
                             <ol class="lh-menu-ol" style="display: block;">
                               <li class="lh-menu-second ml30" v-for="video in chapter.children" :key="video.id">
-                                <a href="#" title>
+                                <a :href="'/player/'+video.videoSourceId" title>
                                   <span class="fr">
                                     <i class="free-icon vam mr10">免费试听</i>
                                   </span>
