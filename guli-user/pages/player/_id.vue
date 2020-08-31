@@ -37,7 +37,7 @@
             format: "mp4",
             mediaType: "video",
             width: "100%",
-            height: "50%",
+            height: "600px",
             autoplay: true,
             isLive: false,
             rePlay: false,
