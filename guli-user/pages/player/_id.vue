@@ -1,12 +1,10 @@
 <template>
   <div>
     <!-- 阿里云视频播放器样式 -->
-    <link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.2/skins/default/aliplayer-min.css" />
-    <link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.2/skins/default/aliplayer-min.css" />
-    <script charset="utf-8" type="text/javascript" src="https://g.alicdn.com/de/prismplayer/2.8.2/aliplayer-min.js"></script>
+    <link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.8/skins/default/aliplayer-min.css" />
+    <script type="text/javascript" charset="utf-8" src="https://g.alicdn.com/de/prismplayer/2.8.8/aliplayer-min.js"></script>
 
-    <!-- 定义播放器dom -->
-    <div  class="prism-player" id="J_prismPlayer"></div>
+    <div class="prism-player" id="player-con"></div>
   </div>
 </template>
 
@@ -15,6 +13,13 @@
 
     export default {
       layout: 'video',//应用video布局
+      asyncData({params, error}) {
+        return   vodApi.getPlayAuth(params.id).then(response=>{
+            return {playAuth: response.data.data.playAuth,videoId: params.id}
+        }
+
+        );
+      },
       data(){
         return({
           playAuth:"",
@@ -25,27 +30,29 @@
       mounted() {
 
         var player = new Aliplayer({
-          id: 'J_prismPlayer',
-          width: '100%',
-          autoplay: true,
+            id: "player-con",
+            vid: this.videoId,
+            playauth: this.playAuth,
+            qualitySort: "asc",
+            format: "mp4",
+            mediaType: "video",
+            width: "100%",
+            height: "50%",
+            autoplay: true,
+            isLive: false,
+            rePlay: false,
+            playsinline: true,
+            preload: true,
+            controlBarVisibility: "hover",
+            useH5Prism: true
+          }, function (player) {
+            console.log("The player is created");
+          }
+        );
 
-          //播放方式二：点播用户推荐
-          vid :this.videoId ,
-          playauth : this.playAuth  ,
-          cover: 'http://liveroom-img.oss-cn-qingdao.aliyuncs.com/logo.png',
-          encryptType:1, //当播放私有加密流时需要设置。
 
-        },function(player){
-          console.log('播放器创建好了。')
-        });
       },
-      created() {
-        if (this.$route.params && this.$route.params.id) {
 
-          this.videoId = this.$route.params.id;
-          this.getPlayAuth();
-        }
-      },
       methods:{
 
         getPlayAuth(){
