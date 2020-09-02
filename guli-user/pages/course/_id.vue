@@ -24,7 +24,7 @@
             </h2>
             <section class="c-attr-jg">
               <span class="c-fff">价格：</span>
-              <b class="c-yellow" style="font-size:24px;" >￥<span v-text="course.price"></span></b>
+              <b class="c-yellow" style="font-size:24px;">￥<span v-text="course.price"></span></b>
             </section>
             <section class="c-attr-mt c-attr-undis">
               <span class="c-fff fsize14">主讲：<span v-text="course.teacherName"></span></span>
@@ -32,7 +32,7 @@
             <section class="c-attr-mt of">
               <span class="ml10 vam">
                 <em class="icon18 scIcon"></em>
-                <a class="c-fff vam" title="收藏" href="#" >收藏</a>
+                <a class="c-fff vam" title="收藏" href="#">收藏</a>
               </span>
             </section>
             <section class="c-attr-mt">
@@ -157,22 +157,122 @@
       </div>
     </section>
     <!-- /课程详情 结束 -->
+
+
+    <div class="mt50 commentHtml">
+      <div>
+        <h6 class="c-c-content c-infor-title" id="i-art-comment">
+          <span class="commentTitle">课程评论</span>
+        </h6>
+        <section class="lh-bj-list pr mt20 replyhtml">
+          <ul>
+            <li class="unBr">
+              <aside class="noter-pic">
+                <img width="50" height="50" class="picImg" src="~/assets/img/avatar-boy.gif">
+              </aside>
+              <div class="of">
+                <section class="n-reply-wrap">
+                  <fieldset>
+                    <textarea name="" v-model="comment.content" placeholder="输入您要评论的文字" id="commentContent"></textarea>
+                  </fieldset>
+                  <p class="of mt5 tar pl10 pr10">
+                    <span class="fl "><tt class="c-red commentContentmeg" style="display: none;"></tt></span>
+                    <input type="button" @click="addComment()" value="回复" class="lh-reply-btn">
+                  </p>
+                </section>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <section class="">
+          <section class="question-list lh-bj-list pr">
+            <ul class="pr10">
+              <li v-for="(comment,index) in data.items" v-bind:key="index">
+                <aside class="noter-pic">
+                  <img width="50" height="50" class="picImg" :src="comment.avatar">
+                </aside>
+                <div class="of">
+                    <span class="fl">
+                    <font class="fsize12 c-blue">
+                      {{comment.nickname}}</font>
+                    <font class="fsize12 c-999 ml5">评论：</font></span>
+                </div>
+                <div class="noter-txt mt5">
+                  <p>{{comment.content}}</p>
+                </div>
+                <div class="of mt5">
+                  <span class="fr"><font class="fsize12 c-999 ml5">{{comment.gmtCreate}}</font></span>
+                </div>
+              </li>
+
+            </ul>
+          </section>
+        </section>
+
+        <!-- 公共分页 开始 -->
+        <div class="paging">
+          <!-- undisable这个class是否存在，取决于数据属性hasPrevious -->
+          <a
+            :class="{undisable: !data.hasPrevious}"
+            href="#"
+            title="首页"
+            @click.prevent="gotoPage(1)">首</a>
+          <a
+            :class="{undisable: !data.hasPrevious}"
+            href="#"
+            title="前一页"
+            @click.prevent="gotoPage(data.current-1)">&lt;</a>
+          <a
+            v-for="page in data.pages"
+            :key="page"
+            :class="{current: data.current == page, undisable: data.current == page}"
+            :title="'第'+page+'页'"
+            href="#"
+            @click.prevent="gotoPage(page)">{{ page }}</a>
+          <a
+            :class="{undisable: !data.hasNext}"
+            href="#"
+            title="后一页"
+            @click.prevent="gotoPage(data.current+1)">&gt;</a>
+          <a
+            :class="{undisable: !data.hasNext}"
+            href="#"
+            title="末页"
+            @click.prevent="gotoPage(data.pages)">末</a>
+          <div class="clear"/>
+        </div>
+        <!-- 公共分页 结束 -->
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import courseApi from "@/api/course.js"
-  export default {
-    data(){
-      return({
+  import commentApi from "@/api/comment.js"
 
-        course:{
+
+  export default {
+    data() {
+      return ({
+        data: {},
+        page: 1,
+        limit: 4,
+        total: 10,
+        comment: {
+          content: '',
+          courseId: '',
+          teacherId: ''
+
+
+        },
+        course: {
           id: "",
           title: "",
           price: ""
 
         },
-        chapterList:[]
+        chapterList: []
 
       })
     },
@@ -182,20 +282,57 @@
 
         this.course.id = this.$route.params.id;
         this.getCourseDetail();
+        this.getComment();
       }
     },
-    methods:{
+    methods: {
 
 
+      //获取课程信息
+      getCourseDetail() {
+        courseApi.getCourseDetail(this.course.id).then(response => {
 
-      getCourseDetail(){
-        courseApi.getCourseDetail(this.course.id).then(response=>{
-
-          this.course =   response.data.data.course;
+          this.course = response.data.data.course;
           this.chapterList = response.data.data.chapterVoList;
           debugger
         });
-      }
+      },
+
+      //获取课程评论
+      getComment() {
+
+        commentApi.getCommentList(this.page, this.limit, this.course.id).then(
+          response => {
+
+            this.data = response.data.data;
+          }
+        );
+      },
+
+      //评论分页跳转
+      gotoPage(page) {
+
+
+        commentApi.getCommentList(page, this.limit, this.course.id).then(
+          response => {
+
+            this.data = response.data.data;
+          }
+        );
+      },
+
+      //添加评论
+      addComment() {
+        this.comment.teacherId = this.course.teacherId;
+        this.comment.courseId = this.course.id;
+        commentApi.addComment(this.comment).then(response => {
+          if (response.data.success) {
+            this.comment.content = ''
+            this.getComment();
+          }
+        })
+      },
+
 
     }
 
