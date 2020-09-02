@@ -154,13 +154,6 @@
           </div>
         </aside>
         <div class="clear"></div>
-      </div>
-    </section>
-    <!-- /课程详情 结束 -->
-
-
-    <div class="mt50 commentHtml">
-      <div>
         <h6 class="c-c-content c-infor-title" id="i-art-comment">
           <span class="commentTitle">课程评论</span>
         </h6>
@@ -210,40 +203,51 @@
         </section>
 
         <!-- 公共分页 开始 -->
-        <div class="paging">
-          <!-- undisable这个class是否存在，取决于数据属性hasPrevious -->
-          <a
-            :class="{undisable: !data.hasPrevious}"
-            href="#"
-            title="首页"
-            @click.prevent="gotoPage(1)">首</a>
-          <a
-            :class="{undisable: !data.hasPrevious}"
-            href="#"
-            title="前一页"
-            @click.prevent="gotoPage(data.current-1)">&lt;</a>
-          <a
-            v-for="page in data.pages"
-            :key="page"
-            :class="{current: data.current == page, undisable: data.current == page}"
-            :title="'第'+page+'页'"
-            href="#"
-            @click.prevent="gotoPage(page)">{{ page }}</a>
-          <a
-            :class="{undisable: !data.hasNext}"
-            href="#"
-            title="后一页"
-            @click.prevent="gotoPage(data.current+1)">&gt;</a>
-          <a
-            :class="{undisable: !data.hasNext}"
-            href="#"
-            title="末页"
-            @click.prevent="gotoPage(data.pages)">末</a>
-          <div class="clear"/>
+        <div>
+          <div class="paging">
+            <!-- undisable这个class是否存在，取决于数据属性hasPrevious -->
+            <a
+              :class="{undisable: !data.hasPrevious}"
+              href="#"
+              title="首页"
+              @click.prevent="gotoPage(1)">首</a>
+            <a
+              :class="{undisable: !data.hasPrevious}"
+              href="#"
+              title="前一页"
+              @click.prevent="gotoPage(data.current-1)">&lt;</a>
+            <a
+              v-for="page in data.pages"
+              :key="page"
+              :class="{current: data.current == page, undisable: data.current == page}"
+              :title="'第'+page+'页'"
+              href="#"
+              @click.prevent="gotoPage(page)">{{ page }}</a>
+            <a
+              :class="{undisable: !data.hasNext}"
+              href="#"
+              title="后一页"
+              @click.prevent="gotoPage(data.current+1)">&gt;</a>
+            <a
+              :class="{undisable: !data.hasNext}"
+              href="#"
+              title="末页"
+              @click.prevent="gotoPage(data.pages)">末</a>
+            <div class="clear"/>
+          </div>
         </div>
         <!-- 公共分页 结束 -->
       </div>
-    </div>
+
+
+
+
+
+    </section>
+    <!-- /课程详情 结束 -->
+
+
+
   </div>
 </template>
 
