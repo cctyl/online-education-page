@@ -36,7 +36,8 @@
               </span>
             </section>
             <section class="c-attr-mt">
-              <a href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
+              <a v-if="course.price==0" href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
+              <a v-if="course.price>0" href="#" title="立即购买" @click="getOrderId()" class="comm-btn c-btn-3">立即购买</a>
             </section>
           </section>
         </aside>
@@ -255,6 +256,8 @@
 <script>
   import courseApi from "@/api/course.js"
   import commentApi from "@/api/comment.js"
+  import orderApi from "@/api/order.js"
+
 
 
   export default {
@@ -292,7 +295,16 @@
     },
     methods: {
 
+      getOrderId(){
+        orderApi.getOrderId(this.course.id).then(
+          response =>{
+            debugger
 
+
+          }
+        );
+
+      },
       //获取课程信息
       getCourseDetail() {
         courseApi.getCourseDetail(this.course.id).then(response => {
