@@ -301,6 +301,12 @@
             var orderId = response.data.data.orderId;
             this.$router.push({path:'/orders/'+orderId});
           }
+        ).catch(
+          reason => {
+
+            this.$router.push({path:'/login'});
+
+          }
         );
 
       },
@@ -310,7 +316,7 @@
 
           this.course = response.data.data.course;
           this.chapterList = response.data.data.chapterVoList;
-          debugger
+
         });
       },
 
