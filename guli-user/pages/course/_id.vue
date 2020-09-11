@@ -37,7 +37,7 @@
             </section>
             <section class="c-attr-mt">
               <a v-if="course.price==0" href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
-              <a v-if="course.price>0" href="#" title="立即购买" @click="createOrder()" class="comm-btn c-btn-3">立即购买</a>
+              <a v-if="course.price>0"  title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
             </section>
           </section>
         </aside>
