@@ -296,7 +296,7 @@
     methods: {
 
       createOrder(){
-        orderApi.getOrderId(this.course.id).then(
+        orderApi.createOrder(this.course.id).then(
           response =>{
             var orderId = response.data.data.orderId;
             this.$router.push({path:'/orders/'+orderId});
