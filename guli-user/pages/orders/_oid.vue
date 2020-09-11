@@ -48,7 +48,9 @@
       <div class="Finish">
         <div class="fr" id="AgreeDiv">
 
-          <label for="Agree"><p class="on"><input type="checkbox" checked="checked">我已阅读并同意<a href="javascript:" target="_blank">《谷粒学院购买协议》</a></p></label>
+          <label for="Agree"><p class="on"><input type="checkbox" checked="checked">我已阅读并同意<a href="javascript:"
+                                                                                              target="_blank">《谷粒学院购买协议》</a>
+          </p></label>
         </div>
         <div class="clear"></div>
         <div class="Main fl">
@@ -71,58 +73,64 @@
 <script>
 
   import orderApi from "@/api/order.js"
-    export default {
-       data(){
-         return({
+
+  export default {
+    data() {
+      return ({
 
 
-           order:{
-             id: "1195693605513891841",
-             orderNo: "1195693605555834880",
-             courseId: "18",
-             courseTitle: "Java精品课程",
-             courseCover: "http://guli-file.oss-cn-beijing.aliyuncs.com/cover/2019/03/06/866e9aca-b530-4f71-a690-72d4a4bfd1e7.jpg",
-             teacherName: "晴天",
-             memberId: "1",
-             nickname: "小三1231",
-             mobile: "13700000001",
-             totalFee: 1,
-             payType: null,
-             status: 0,
-           },
-         })
-       },
+        order: {
+          id: "1195693605513891841",
+          orderNo: "1195693605555834880",
+          courseId: "18",
+          courseTitle: "Java精品课程",
+          courseCover: "http://guli-file.oss-cn-beijing.aliyuncs.com/cover/2019/03/06/866e9aca-b530-4f71-a690-72d4a4bfd1e7.jpg",
+          teacherName: "晴天",
+          memberId: "1",
+          nickname: "小三1231",
+          mobile: "13700000001",
+          totalFee: 1,
+          payType: null,
+          status: 0,
+        },
+      })
+    },
 
-      created() {
+    created() {
 
-        if (this.$route.params && this.$route.params.oid) {
+      if (this.$route.params && this.$route.params.oid) {
 
-          this.order.orderNo = this.$route.params.oid;
-          this.getOrderInfo();
-        }
+        this.order.orderNo = this.$route.params.oid;
+        this.getOrderInfo();
+      }
+    },
+
+    methods: {
+
+      //获取订单信息
+      getOrderInfo() {
+
+        orderApi.getOrderInfo(this.order.orderNo).then(
+          respose => {
+            this.order = respose.data.data.item;
+
+          }
+        ).catch(
+          respose => {
+            console.log(respose + "getOrderInfo出现错误，猜测是后台接口错误");
+
+          }
+        );
+
       },
 
-      methods:{
+      //跳转到支付页面
+      toPay() {
+        this.$router.push({path:'/pay/'+this.order.orderNo});
+      },
 
-          getOrderInfo(){
-
-            orderApi.getOrderInfo(this.order.orderNo).then(
-              respose =>{
-                this.order = respose.data.data.item;
-
-              }
-            ).catch(
-
-              respose =>{
-                  console.log(respose+"getOrderInfo出现错误，猜测是后台接口错误");
-
-              }
-            );
-
-          },
-
-      }
     }
+  }
 </script>
 
 <style scoped>
