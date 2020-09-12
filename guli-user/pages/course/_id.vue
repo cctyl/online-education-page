@@ -36,7 +36,7 @@
               </span>
             </section>
             <section class="c-attr-mt">
-              <a v-if="course.price==0 || course.buyStatus" href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
+              <a v-if="course.price==0 || course.buyStatus" href="#view" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
               <a v-if="!course.buyStatus"  title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
             </section>
           </section>
@@ -97,7 +97,7 @@
                 <!-- /课程介绍 -->
                 <div class="mt50">
                   <h6 class="c-g-content c-infor-title">
-                    <span>课程大纲</span>
+                    <span>课程大纲<a name="view"></a></span>
                   </h6>
                   <section class="mt20">
                     <div class="lh-menu-wrap">
