@@ -36,8 +36,8 @@
               </span>
             </section>
             <section class="c-attr-mt">
-              <a v-if="course.price==0" href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
-              <a v-if="course.price>0"  title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
+              <a v-if="course.price==0 || course.buyStatus" href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
+              <a v-if="!course.buyStatus"  title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
             </section>
           </section>
         </aside>
@@ -277,7 +277,8 @@
         course: {
           id: "",
           title: "",
-          price: ""
+          price: "",
+          buyStatus:""
 
         },
         chapterList: []
@@ -289,6 +290,7 @@
       if (this.$route.params && this.$route.params.id) {
 
         this.course.id = this.$route.params.id;
+        debugger
         this.getCourseDetail();
         this.getComment();
       }
@@ -312,11 +314,13 @@
       },
       //获取课程信息
       getCourseDetail() {
+
         courseApi.getCourseDetail(this.course.id).then(response => {
 
           this.course = response.data.data.course;
           this.chapterList = response.data.data.chapterVoList;
 
+          debugger
         });
       },
 

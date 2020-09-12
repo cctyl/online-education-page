@@ -29,7 +29,7 @@ export default {
     return request({
 
       url: `eduservice/course/front/detail/${courseId}`,
-      method:'get'
+      method:'post'
 
     })
   },
