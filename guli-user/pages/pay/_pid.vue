@@ -84,6 +84,9 @@
         orderApi.getOrderStatus(this.orderNo).then(
           response => {
 
+            if (response==undefined){
+              console.log("getOrderStatus response为 undefined");
+            }
             if (response.data.data.status==true) {
               //如果支付成功，清除定时器
               clearInterval(this.timer);
