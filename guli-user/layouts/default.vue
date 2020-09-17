@@ -178,23 +178,18 @@
         cookie.set('login_token', this.token, {domain: 'localhost'});
 
         loginApi.getUserInfoByToken().then(
-          response=>{
+          response => {
 
 
+            this.loginInfo = response.data.data.userInfo;
+            //将用户信息记录cookie
+            cookie.set('guli_ucenter', this.loginInfo, {domain: 'localhost'});
 
-
-
-                this.loginInfo = response.data.data.userInfo;
-                //将用户信息记录cookie
-                cookie.set('guli_ucenter', this.loginInfo, {domain: 'localhost'});
-
-                //清除参数
-                this.$route.query.token = '';
+            //清除参数
+            this.$route.query.token = '';
 
 
           }
-
-
         );
 
 

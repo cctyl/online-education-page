@@ -37,7 +37,7 @@
             </section>
             <section class="c-attr-mt">
               <a v-if="course.price==0 || course.buyStatus" href="#view" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
-              <a v-if="!course.buyStatus"  title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
+              <a v-if="!course.buyStatus" title="立即购买" @click.prevent="createOrder()" class="comm-btn c-btn-3">立即购买</a>
             </section>
           </section>
         </aside>
@@ -110,9 +110,10 @@
                             </a>
                             <ol class="lh-menu-ol" style="display: block;">
                               <li class="lh-menu-second ml30" v-for="video in chapter.children" :key="video.id">
-                                <a :href="'/player/'+video.videoSourceId+'-'+course.id" title>
-                                  <span class="fr">
-                                    <i class="free-icon vam mr10">免费试听</i>
+                                <a @click.prevent="toPlayerPage(video.videoSourceId)" title>
+                                  <span class="fr" @click.prevent="toPlayerPage(video.videoSourceId)">
+                                    <i v-if="!course.buyStatus" class="free-icon vam mr10" >免费试听</i>
+                                    <i v-if="course.buyStatus" class="free-icon vam mr10">观看</i>
                                   </span>
                                   <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{video.title}}
                                 </a>
@@ -242,12 +243,8 @@
       </div>
 
 
-
-
-
     </section>
     <!-- /课程详情 结束 -->
-
 
 
   </div>
@@ -257,7 +254,8 @@
   import courseApi from "@/api/course.js"
   import commentApi from "@/api/comment.js"
   import orderApi from "@/api/order.js"
-
+  import course from "../../api/course"
+  import cookie from 'js-cookie'
 
 
   export default {
@@ -278,7 +276,7 @@
           id: "",
           title: "",
           price: "",
-          buyStatus:""
+          buyStatus: ""
 
         },
         chapterList: []
@@ -290,23 +288,22 @@
       if (this.$route.params && this.$route.params.id) {
 
         this.course.id = this.$route.params.id;
-        debugger
         this.getCourseDetail();
         this.getComment();
       }
     },
     methods: {
 
-      createOrder(){
+      createOrder() {
         orderApi.createOrder(this.course.id).then(
-          response =>{
+          response => {
             var orderId = response.data.data.orderId;
-            this.$router.push({path:'/orders/'+orderId});
+            this.$router.push({path: '/orders/' + orderId});
           }
         ).catch(
           reason => {
 
-            this.$router.push({path:'/login'});
+            this.$router.push({path: '/login'});
 
           }
         );
@@ -320,7 +317,6 @@
           this.course = response.data.data.course;
           this.chapterList = response.data.data.chapterVoList;
 
-          debugger
         });
       },
 
@@ -359,6 +355,29 @@
         })
       },
 
+
+      //跳转到播放页面
+      toPlayerPage(videoSourceId) {
+        //首先判断有没有传递视频id
+        if (videoSourceId) {
+
+
+          //判断是否登陆
+          var jsonStr = cookie.get("guli_ucenter");
+          console.log("toPlayerPage--jsonStr:" + jsonStr);
+          if (jsonStr) {
+            //已经登陆
+            location.href = "/player/" + videoSourceId+"-"+this.course.id;
+          } else {
+            //没有登陆
+            location.href = "/login";
+          }
+
+
+        }else {
+          console.log("toPlayerPage--没有传递videosourceId :" + videoSourceId);
+        }
+      },
 
     }
 
