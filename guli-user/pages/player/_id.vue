@@ -58,6 +58,7 @@
         getPlayAuth(){
           vodApi.getPlayAuth(this.videoId).then(
             response=>{
+              console.log(JSON.stringify(response));
              this.playAuth =  response.data.data.playAuth;
             }
           );

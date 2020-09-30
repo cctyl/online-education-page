@@ -367,7 +367,7 @@
           console.log("toPlayerPage--jsonStr:" + jsonStr);
           if (jsonStr) {
             //已经登陆
-            location.href = "/player/" + videoSourceId+"-"+this.course.id;
+            location.href = "/player/" + videoSourceId;/*+"-"+this.course.id*/
           } else {
             //没有登陆
             location.href = "/login";
