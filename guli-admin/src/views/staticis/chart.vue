@@ -41,7 +41,23 @@
 
 <script>
     export default {
-        name: "chart"
+        name: "chart",
+      data(){
+
+          return({
+            searchObj:{},
+            btnDisabled:''
+          })
+      },
+      created() {
+      },
+      methods:{
+        showChart(){
+
+        }
+      }
+
+
     }
 </script>
 
