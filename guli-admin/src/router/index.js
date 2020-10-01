@@ -73,16 +73,20 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/statistics/daily/chart',
     name: 'Statistics',
-    meta: { title: '统计分析', icon: 'chart' },
+    meta: {title: '统计分析', icon: 'chart'},
     children: [
       {
         path: 'chart',
         name: 'StatisticsDailyChart',
         component: () => import('@/views/staticis/chart'),
-        meta: { title: '统计图表' }
-      }
+        meta: {title: '统计图表', icon: 'table'}
+      },
+
+
     ]
   },
+
+
   {
     path: '/subject',
     component: Layout,
