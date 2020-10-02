@@ -25,10 +25,8 @@
     </el-form>
 
     <div class="chart-container">
-      <div id="view" class="chart" style="height:250px;width:100%"/>
-      <div id="login" class="chart" style="height:250px;width:100%"/>
-      <div id="register" class="chart" style="height:250px;width:100%"/>
-      <div id="course" class="chart" style="height:250px;width:100%"/>
+      <div id="view" class="chart" style="height:500px;width:100%"/>
+
     </div>
   </div>
 </template>
@@ -43,21 +41,21 @@
 
       return ({
         searchObj: {
-          begin:'',
-          end:''
+          begin: '',
+          end: ''
         },
         btnDisabled: false,
-        viewList:[],
-        loginList:[],
-        registerList:[],
-        courseList:[],
-        dateList:[],
+        viewList: [],
+        loginList: [],
+        registerList: [],
+        courseList: [],
+        dateList: [],
 
       })
     },
 
     methods: {
-      showChart(){
+      showChart() {
         staticApi.getDailyCount(this.searchObj).then(result => {
           console.log(result);
           this.viewList = result.data.viewList;
@@ -76,99 +74,69 @@
       setChart() {
         // 基于准备好的dom，初始化echarts实例
         this.viewChart = echarts.init(document.getElementById('view'));
-        this.loginChart = echarts.init(document.getElementById('login'))
-        this.registerChart = echarts.init(document.getElementById('register'))
-        this.courseChart = echarts.init(document.getElementById('course'))
+
         // 指定图表的配置项和数据
         var viewOption = {
           title: {
-            text: '日播放数'
+            text: '日统计'
           },
-          // x轴是类目轴（离散数据）,必须通过data设置类目数据
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['播放数', '登陆人数', '注册人数', '新增课程数']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
           xAxis: {
             type: 'category',
+            boundaryGap: false,
             data: this.dateList
           },
-          // y轴是数据轴（连续数据）
           yAxis: {
             type: 'value'
           },
-          // 系列列表。每个系列通过 type 决定自己的图表类型
-          series: [{
-            // 系列中的数据内容数组
-            data: this.viewList,
-            // 折线图
-            type: 'line'
-          }]
-        };
-        var loginOption = {
-          title: {
-            text: '日登陆数'
-          },
-          // x轴是类目轴（离散数据）,必须通过data设置类目数据
-          xAxis: {
-            type: 'category',
-            data: this.dateList
-          },
-          // y轴是数据轴（连续数据）
-          yAxis: {
-            type: 'value'
-          },
-          // 系列列表。每个系列通过 type 决定自己的图表类型
-          series: [{
-            // 系列中的数据内容数组
-            data: this.loginList,
-            // 折线图
-            type: 'line'
-          }]
-        };
-        var registerOption = {
-          title: {
-            text: '日注册人数'
-          },
-          // x轴是类目轴（离散数据）,必须通过data设置类目数据
-          xAxis: {
-            type: 'category',
-            data: this.dateList
-          },
-          // y轴是数据轴（连续数据）
-          yAxis: {
-            type: 'value'
-          },
-          // 系列列表。每个系列通过 type 决定自己的图表类型
-          series: [{
-            // 系列中的数据内容数组
-            data: this.registerList,
-            // 折线图
-            type: 'line'
-          }]
-        };
-        var courseOption = {
-          title: {
-            text: '日新增课程数'
-          },
-          // x轴是类目轴（离散数据）,必须通过data设置类目数据
-          xAxis: {
-            type: 'category',
-            data: this.dateList
-          },
-          // y轴是数据轴（连续数据）
-          yAxis: {
-            type: 'value'
-          },
-          // 系列列表。每个系列通过 type 决定自己的图表类型
-          series: [{
-            // 系列中的数据内容数组
-            data: this.courseList,
-            // 折线图
-            type: 'line'
-          }]
+          series: [
+            {
+              name: '播放数',
+              type: 'line',
+              stack: '总量',
+              data: this.viewList
+            },
+            {
+              name: '登陆人数',
+              type: 'line',
+              stack: '总量',
+              data: this.loginList
+            },
+            {
+              name: '注册人数',
+              type: 'line',
+              stack: '总量',
+              data: this.registerList
+            },
+            {
+              name: '新增课程数',
+              type: 'line',
+              stack: '总量',
+              data: this.courseList
+            },
+
+          ]
         };
 
+
         this.viewChart.setOption(viewOption);
-        this.loginChart.setOption(loginOption);
-        this.registerChart.setOption(registerOption);
-        this.courseChart.setOption(courseOption);
+
       }
     }
 
