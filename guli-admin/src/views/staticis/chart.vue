@@ -97,6 +97,7 @@
               saveAsImage: {}
             }
           },
+
           xAxis: {
             type: 'category',
             boundaryGap: false,
