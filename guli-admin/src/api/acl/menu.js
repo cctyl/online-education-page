@@ -5,7 +5,7 @@ const api_name = '/admin/acl/permission'
 export default {
   getNestedTreeList() {
     return request({
-      url: `${api_name}`,
+      url: `${api_name}/all`,
       method: 'get'
     })
   },
@@ -35,9 +35,10 @@ export default {
       method: 'get'
     })
   },
+
   doAssign(roleId, permissionId) {
     return request({
-      url: `${api_name}/doAssign`,
+      url: `${api_name}/assign`,
       method: "post",
       params: {roleId, permissionId}
     })
