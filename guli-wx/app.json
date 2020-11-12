@@ -1,0 +1,14 @@
+{
+  "pages":[
+    "pages/index/index"
+    
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "谷粒学院-后台管理",
+    "navigationBarTextStyle":"black"
+  },
+ 
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,23 @@
+<!--index.wxml-->
+<view class="container">
+
+<!--  顶部面板提示区域-->
+  <van-image
+          width="100%"
+          height="500rpx"
+          fit="contain"
+          src="https://img.yzcdn.cn/vant/cat.jpeg"
+  />
+
+  <!--  功能导航区域-->
+  <van-grid icon-size="50px">
+    <van-grid-item icon="photo-o" text="文字" />
+    <van-grid-item icon="photo-o" text="文字" />
+    <van-grid-item icon="photo-o" text="文字" />
+    <van-grid-item icon="photo-o" text="文字" />
+  </van-grid>
+
+
+
+
+</view>
